@@ -28,7 +28,7 @@ function build_project {
   mkdir build
   cd build
   ../configure --prefix=${INSTALL_PREFIX} $1
-  make -j 2>&1 | tee make.log
+  make -j
   echo "Installing project ${PROJECT}"
   make install 2>&1 | tee make-install.log
   cd ../..
