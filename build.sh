@@ -53,8 +53,11 @@ PROJECT=riscv-fesvr
 build_project
 
 # build GCC toolchain
-PROJECT=riscv-gcc-newlib
-build_project
+cd riscv-gcc
+echo "Building project riscv-gcc"
+make clean
+make newlib INSTALL_DIR=$INSTALL_PREFIX
+cd ..
 
 # build proxy kernel
 PROJECT=riscv-pk

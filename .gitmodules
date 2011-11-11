@@ -4,9 +4,9 @@
 [submodule "riscv-fesvr"]
 	path = riscv-fesvr
 	url = git@github.com:ucb-bar/riscv-fesvr.git
-[submodule "riscv-gcc-newlib"]
-	path = riscv-gcc-newlib
-	url = git@github.com:ucb-bar/riscv-gcc-newlib.git
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = git@github.com:ucb-bar/riscv-pk.git
+[submodule "riscv-gcc"]
+	path = riscv-gcc
+	url = git@github.com:ucb-bar/riscv-gcc.git
