@@ -10,3 +10,6 @@
 [submodule "riscv-gcc"]
 	path = riscv-gcc
 	url = git@github.com:ucb-bar/riscv-gcc.git
+[submodule "riscv-opcodes"]
+	path = riscv-opcodes
+	url = git@github.com:ucb-bar/riscv-opcodes.git
