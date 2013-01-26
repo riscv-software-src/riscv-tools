@@ -1,0 +1,40 @@
+# Script to build RISC-V ISA simulator, proxy kernel, and GNU toolchain.
+# Tools will be installed to $RISCV.
+
+if [ "x$RISCV" = "x" ]
+then
+  echo "Please set the RISCV environment variable to your preferred install path."
+  exit 1
+fi
+
+PATH="$RISCV/bin:$PATH"
+#GCC_VERSION=`gcc -v 2>&1 | tail -1 | awk '{print $3}'`
+
+set -e
+
+function build_project {
+  echo
+  if [ -e "$1/build" ]
+  then
+    echo "Removing existing $1/build directory"
+    rm -rf $1/build
+  fi
+  mkdir -p $1/build
+  cd $1/build
+  echo "Configuring project $1"
+  ../configure $2 $3 $4 > build.log
+  echo "Building project $1"
+  make -j > build.log
+  echo "Installing project $1"
+  make install > build.log
+  cd - > /dev/null
+}
+
+function build_gcc {
+  echo
+  cd riscv-gcc
+  echo "Building project riscv-gcc"
+  make clean
+  make newlib INSTALL_DIR=$RISCV > build.log
+  cd ..
+}
