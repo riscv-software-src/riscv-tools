@@ -1,0 +1,10 @@
+Quick and dirty instructions:
+
+$ git submodule update --init
+$ export RISCV=/path/to/install/riscv/toolchain
+$ ./build.sh
+
+Ubuntu packages needed:
+
+$ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo
+
