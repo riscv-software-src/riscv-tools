@@ -35,7 +35,12 @@ function build_project {
 function build_tests {
   echo
   cd riscv-tests/isa > /dev/null
-  echo "Building project riscv-tests"
+  echo "Building project riscv-tests/isa"
+  make -j$JOBS clean > /dev/null
+  make -j$JOBS > /dev/null
+  cd - > /dev/null
+  cd riscv-tests/benchmarks > /dev/null
+  echo "Building project riscv-tests/benchmarks"
   make -j$JOBS clean > /dev/null
   make -j$JOBS > /dev/null
   cd - > /dev/null
