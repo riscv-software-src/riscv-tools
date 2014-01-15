@@ -1,6 +1,6 @@
 Quick and dirty instructions:
 
-$ git submodule update --init
+$ git submodule update --init --recursive
 $ export RISCV=/path/to/install/riscv/toolchain
 $ ./build.sh
 
