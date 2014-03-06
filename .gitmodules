@@ -16,3 +16,6 @@
 [submodule "riscv-tests"]
 	path = riscv-tests
 	url = git@github.com:ucb-bar/riscv-tests.git
+[submodule "riscv-llvm"]
+	path = riscv-llvm
+	url = git@github.com:ucb-bar/riscv-llvm.git
