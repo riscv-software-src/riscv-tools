@@ -24,7 +24,7 @@ function build_project {
   mkdir -p $1/build
   cd $1/build
   echo "Configuring project $1"
-  ../configure $2 $3 $4 > build.log
+  ../configure $2 $3 $4 $5 $6 > build.log
   echo "Building project $1"
   make -j$JOBS >> build.log
   echo "Installing project $1"
