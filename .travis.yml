@@ -10,11 +10,16 @@ env:
 git:
       submodules: false # we'll do git submodule update ourselves
 before_install:
-    # use bash instead of dash
+    # fix urls to be https to avoid pubkey issues
+  - echo $0
+  - sudo chsh -s /bin/bash travis
+  - echo $0
+  - ls -la /bin/sh
   - sudo rm /bin/sh
   - sudo ln -s /bin/bash /bin/sh
+  - ls -la /bin/sh
+  - pwd
   - mkdir ~/riscv_install
-    # fix urls to be https to avoid pubkey issues
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init
     # hack to deal with sub-sub module git -> https url
