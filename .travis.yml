@@ -5,12 +5,12 @@ cache: apt
 env:
   global:
     # required packages to install
-    - PKGS="autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo"
+    - PKGS="gperf autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo"
     - RISCV="/home/travis/riscv_install"
 git:
       submodules: false # we'll do git submodule update ourselves
 before_install:
-    # fix urls to be https to avoid pubkey issues
+    # change shell to bash 
   - echo $0
   - sudo chsh -s /bin/bash travis
   - echo $0
@@ -20,11 +20,14 @@ before_install:
   - ls -la /bin/sh
   - pwd
   - mkdir ~/riscv_install
+    # fix urls to be https to avoid pubkey issues
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init
     # hack to deal with sub-sub module git -> https url
   - cd riscv-tests && sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules && git submodule update --init && cd ..
   - cd riscv-llvm && sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules && git submodule update --init && cd ..
+    # set jobs to 1 to avoid running out of memory on the travis machine
+  - sed -i.bak 's/JOBS=16/JOBS=1/' build.common
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq ${PKGS}
