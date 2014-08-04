@@ -1,4 +1,4 @@
-riscv-tools [![Build Status](https://travis-ci.org/ucb-bar/riscv-tools.svg?branch=master)](https://travis-ci.org/ucb-bar/riscv-tools) [View on Github](http://github.com/ucb-bar/riscv-tools)
+riscv-tools [![Build Status](https://travis-ci.org/ucb-bar/riscv-tools.svg?branch=master)](https://travis-ci.org/ucb-bar/riscv-tools)
 ===========
 
 Quick and dirty instructions:
