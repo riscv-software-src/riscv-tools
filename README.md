@@ -1058,7 +1058,7 @@ _"Hello world!" compiled and run on Linux/RISC-V and readelf output._
 
 ## <a name="references"></a> References
 
-* Waterman, A., Lee, Y., Patterson, D., and Asanovi&cacute;, K,. "The RISC-V Instruction Set Manual," vol. II, [http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
+* Waterman, A., Lee, Y., Patterson, D., and Asanovic, K,. "The RISC-V Instruction Set Manual," vol. II, [http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
 
 * Bovet, D.P., and Cesati, M. _Understanding the Linux Kernel_, 3rd ed., O'Reilly, 2006.
 
