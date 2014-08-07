@@ -740,7 +740,7 @@ Download a copy of the example `inittab` using this command:
 	$ curl -L http://riscv.org/install-guides/linux-inittab > etc/inittab
 
 If you would like to use `getty` instead, change
-line 5 to invoke that</code>:
+line 5 to invoke that:
 
 	5 ::respawn:/bin/busybox getty 38400 ttyHTIF0
 
