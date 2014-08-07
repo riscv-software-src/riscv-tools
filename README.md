@@ -8,7 +8,7 @@ Two guides are available for this repo:
 [2) The Linux/RISC-V Installation Manual](#linuxman)
 
 
-## <a id="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
+# <a id="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
 This document was authored by [Quan Nguyen](http://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
 website](http://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
@@ -234,7 +234,7 @@ I know, I've been there too. Good luck!
 
 
 
-## <a id="linuxman"></a> The Linux/RISC-V Installation Manual
+# <a id="linuxman"></a> The Linux/RISC-V Installation Manual
 
 ## Introduction
 
