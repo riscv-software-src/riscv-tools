@@ -13,7 +13,7 @@ Three guides are available for this repo:
 ===========================================================================
 
 
-#<a id="quickstart"></a> Quickstart:
+# <a name="quickstart"></a>Quickstart:
 
 ```sh
 $ git submodule update --init --recursive
@@ -36,7 +36,7 @@ $ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
 ===========================================================================
 
 
-# <a id="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
+# <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
 This document was authored by [Quan Nguyen](http://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
 website](http://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
@@ -262,7 +262,7 @@ I know, I've been there too. Good luck!
 
 
 
-# <a id="linuxman"></a> The Linux/RISC-V Installation Manual
+# <a name="linuxman"></a> The Linux/RISC-V Installation Manual
 
 ## Introduction
 
