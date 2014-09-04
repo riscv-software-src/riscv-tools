@@ -1,11 +1,39 @@
 riscv-tools [![Build Status](https://travis-ci.org/ucb-bar/riscv-tools.svg?branch=master)](https://travis-ci.org/ucb-bar/riscv-tools) 
 ===========================================================================
 
-Two guides are available for this repo:
+Three guides are available for this repo:
 
-[1) The RISC-V GCC/Newlib Toolchain Installation Manual](#newlibman)
+1. [Quickstart](#quickstart)
 
-[2) The Linux/RISC-V Installation Manual](#linuxman)
+2. [The RISC-V GCC/Newlib Toolchain Installation Manual](#newlibman)
+
+3. [The Linux/RISC-V Installation Manual](#linuxman)
+
+
+===========================================================================
+
+
+#<a id="quickstart"></a> Quickstart:
+
+```sh
+$ git submodule update --init --recursive
+$ export RISCV=/path/to/install/riscv/toolchain
+$ ./build.sh
+```
+
+Ubuntu packages needed:
+
+```sh
+$ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo
+```
+
+Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
+To use a compiler different than the default (for example on OS X), use:
+```sh
+$ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
+```
+
+===========================================================================
 
 
 # <a id="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
