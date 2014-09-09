@@ -10,10 +10,10 @@ Three guides are available for this repo:
 3. [The Linux/RISC-V Installation Manual](#linuxman)
 
 
-===========================================================================
+----
 
 
-# <a name="quickstart"></a>Quickstart:
+# <a name="quickstart"></a>Quickstart
 
 ```sh
 $ git submodule update --init --recursive
@@ -33,7 +33,8 @@ To use a compiler different than the default (for example on OS X), use:
 $ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
 ```
 
-===========================================================================
+
+----
 
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
@@ -260,6 +261,8 @@ saying, "Hello world!". If not...
 
 I know, I've been there too. Good luck!
 
+
+----
 
 
 # <a name="linuxman"></a> The Linux/RISC-V Installation Manual
