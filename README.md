@@ -21,7 +21,7 @@ Three guides are available for this repo:
 
 Ubuntu packages needed:
 
-	$ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo
+	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
 
 
 Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
@@ -190,7 +190,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
@@ -401,7 +401,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
