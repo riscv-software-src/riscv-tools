@@ -549,19 +549,18 @@ power of a 16 core machine with you, maybe it's time to get a cup of coffee.
 We are finally poised to bring in the Linux kernel sources.
 Change out of the `riscv-tools/riscv-gcc` directory and clone the 
 `riscv-linux` Git repository into this directory:
-`linux-3.4._xx_`, where _xx_ represents the current
-minor revision (which, as early November 2013, is "68"). However, the most
-recently tested version of the kernel is against 3.4.53, so we will use that:
+`linux-3.14._xx_`, where _xx_ represents the current
+minor revision (which, as early September 2014, is "19").
 
 	$ cd $TOP
-	$ git clone git@github.com:ucb-bar/riscv-linux.git linux-3.4.53
+	$ git clone git@github.com:ucb-bar/riscv-linux.git linux-3.14.19
 
-Download the current minor revision of the 3.4 Linux kernel series
+Download the current minor revision of the 3.14 Linux kernel series
 from [The Linux Kernel Archives](http://www.kernel.org), and in one fell
 swoop, untar them over our repository. (The `-k` switch ensures that
 our `.gitignore` and `README` files don't get clobbered.)
 
-	$ curl -L ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-3.4.53.tar.xz | tar -xJk
+	$ curl -L ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-3.14.19.tar.xz | tar -xJk
 
 
 ### Configuring the Linux Kernel
@@ -669,7 +668,7 @@ cross-compiled to run on RISC-V. Now we'll need a way for the kernel to access
 the binary, and we'll use a root disk image for that. Before we proceed, change
 back into the directory with the Linux sources.
 
-	$ cd $TOP/linux-3.4.53
+	$ cd $TOP/linux-3.14.19
 
 
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
@@ -703,7 +702,7 @@ You can modify this filesystem if you mount it as writable
 from within Linux/RISC-V. However, a better option, especially if you want to
 copy big binaries, is to mount it on your host machine. _You will normally
 need superuser privileges to do a mount._ Do so this way, assuming you want
-to mount the disk image at `linux-3.4.53/mnt`: 
+to mount the disk image at `linux-3.14.19/mnt`: 
 
 	$ mkdir mnt
 	$ sudo mount -o loop root.bin mnt
@@ -847,7 +846,7 @@ before you perform these steps. If you haven't, do so now.)
 First, go to the Linux directory and perform a headers
 check:
 
-	O$ cd $TOP/linux-3.4.53
+	O$ cd $TOP/linux-3.14.19
 	$ make ARCH=riscv headers_check
 
 Once the headers have been checked, install them.
@@ -940,7 +939,7 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
 Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
 	O$ make -j
-	O$ cd $TOP/linux-3.4.53/mnt
+	O$ cd $TOP/linux-3.14.19/mnt
 	O$ cp $TOP/busybox-1.21.1/busybox bin
 
 [Return to text.](#dynamic-busybox-back)
@@ -961,7 +960,7 @@ First, we'll need to make a bigger disk image. A size of 256
 MiB seems to be plenty enough. Then, fill it with all of the goodies from the
 example root image.
 
-	$ cd $TOP/linux-3.4.53
+	$ cd $TOP/linux-3.14.19
 	$ dd if=/dev/zero of=root-gcc.img bs=1M count=256
 	$ mkfs.ext2 -F root-gcc.img
 	$ mkdir mnt-gcc
@@ -1022,7 +1021,7 @@ Once the build is complete, your binaries will be located in
 `gcc`, but there are a bunch of other files that are needed for it to
 run properly. We'll copy those now.
 
-	$ cd $TOP/linux-3.4.53/mnt-gcc
+	$ cd $TOP/linux-3.14.19/mnt-gcc
 	$ cp $SYSROOT/usr/bin/gcc usr/bin
 	$ cp $SYSROOT/usr/bin/{as,ld,readelf} usr/bin
 	$ cp $SYSROOT/usr/lib/crt{1,i,n}.o usr/lib
