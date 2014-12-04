@@ -97,7 +97,7 @@ Thus, **38.64 seconds = 1 SBU**. (EECS members at the University
 
 As a point of reference, my 2007 MacBook with an Intel Core 2
 Duo and 1 GiB RAM has 100.1 seconds to each SBU. Building
-`riscv-linux-gcc`, unsurprisingly, took about an hour.
+`riscv64-unknown-linux-gnu-gcc`, unsurprisingly, took about an hour.
 
 Items marked as "optional" are not measured.
 
@@ -135,7 +135,7 @@ If we are starting from a relatively fresh install of
 GNU/Linux, it will be necessary to install the RISC-V toolchain. The toolchain
 consists of the following components:
 
-*   `riscv-gcc`, a RISC-V cross-compiler
+*   `riscv-gnu-toolchain`, a RISC-V cross-compiler
 *   `riscv-fesvr`, a "front-end" server that
 services calls between the host and target processors on the Host-Target
 InterFace (HTIF) (it also provides a virtualized console and disk device)
@@ -151,7 +151,7 @@ and benchmarks
 
 In the installation guide for Linux builds, we built only the
 simulator and the front-end server. Binaries built against Newlib with
-`riscv-gcc` will not have the luxury of being run on a full-blown
+`riscv-gnu-toolchain` will not have the luxury of being run on a full-blown
 operating system, but they will still demand to have access to some crucial
 system calls.
 
@@ -227,9 +227,9 @@ directory and write your "Hello world!" program. I'll use a long-winded
 	$ cd $TOP
 	$ echo -e '#include <stdio.h>\n int main(void) { printf("Hello world!\\n"); return 0; }' > hello.c
 
-Then, build your program with `riscv-gcc`.
+Then, build your program with `riscv64-unknown-elf-gcc`.
 
-	$ riscv-gcc -o hello hello.c
+	$ riscv64-unknown-elf-gcc -o hello hello.c
 
 When you're done, you may think to do `./hello`,
 but not so fast. We can't even run `spike hello`, because our "Hello
@@ -288,9 +288,7 @@ website](http://ocf.berkeley.edu/~qmn/linux/install.html)
 7.  [Creating a Root Disk Image](#creating-root-disk)
 8.  ["Help! It doesn't work!"](#help-it-doesnt-work)
 9.  [Optional Commands](#optional-commands)
-10.  [Appendices](#appendices)   
-11.  [Building the Native Compiler](#building-native-compiler)
-12.  [References](#references)
+10.  [References](#references)
 
 
 ## <a name="meta-installation-notes"></a>Meta-installation Notes
@@ -330,7 +328,7 @@ Thus, **38.64 seconds = 1 SBU**. (EECS members at the University
 
 As a point of reference, my 2007 MacBook with an Intel Core 2
 Duo and 1 GiB RAM has 100.1 seconds to each SBU. Building
-`riscv-linux-gcc`, unsurprisingly, took about an hour.
+`riscv64-unknown-linux-gnu-gcc`, unsurprisingly, took about an hour.
 
 Items marked as "optional" are not measured.
 
@@ -363,7 +361,7 @@ If we are starting from a relatively fresh install of
 GNU/Linux, it will be necessary to install the RISC-V toolchain. The toolchain
 consists of the following components:
 
-*   `riscv-gcc`, a RISC-V cross-compiler
+*   `riscv-gnu-toolchain`, a RISC-V cross-compiler
 *   `riscv-fesvr`, a "front-end" server that
 services calls between the host and target processors on the Host-Target
 InterFace (HTIF) (it also provides a virtualized console and disk device)
@@ -380,8 +378,8 @@ and benchmarks
 In actuality, of this list, we will need to build only
 `riscv-fesvr` and `riscv-isa-sim`. These are the two
 components needed to simulate RISC-V binaries on the host machine. We will also need to
-build `riscv-linux-gcc`, but this involves a little modification of
-the build procedure for `riscv-gcc`.
+build `riscv64-unknown-linux-gnu-gcc`, but this involves a little modification of
+the build procedure for `riscv64-unknown-elf-gcc`.
 
 First, clone the tools from the `ucb-bar` GitHub
 repository:
@@ -425,7 +423,7 @@ handle 16 make jobs (or conversely, it can handle more), edit
 
 Since we only need to build a few tools, we will use a
 modified build script, listed in its entirety below. Remember that we'll build
-`riscv-linux-gcc` shortly afterwards. If you want to build the full
+`riscv64-unknown-linux-gnu-gcc` shortly afterwards. If you want to build the full
 toolchain for later use, see <a href="#full-toolchain-build">here</a>.
 
 
@@ -448,12 +446,12 @@ build script.
 	$ ./basic-build.sh
 	
 
-### <a name="full-toolchain-build-back"></a> Building `riscv-linux-gcc` (11.41 SBU)
+### <a name="full-toolchain-build-back"></a> Building `riscv64-unknown-linux-gnu-gcc` (11.41 SBU)
 
-`riscv-linux-gcc` is the name of the
+`riscv64-unknown-linux-gnu-gcc` is the name of the
 cross-compiler used to build binaries linked to the GNU C Library
 (`glibc`) instead of the Newlib library. You can build Linux with
-`riscv-gcc`, but you will need `riscv-linux-gcc` to
+`riscv64-unknown-elf-gcc`, but you will need `riscv64-unknown-linux-gnu-gcc` to
 cross-compile applications, so we will build that instead.
 
 #### The `SYSROOT` Concept
@@ -473,7 +471,7 @@ the _host_ system. Now that we're running our binaries from within an
 operating system, we will have to provide these libraries and headers if we want
 to run dynamically-linked binaries and compile programs natively.
 
-We now must instruct the `riscv-linux-gcc` build 
+We now must instruct the `riscv64-unknown-linux-gnu-gcc` build 
 process to place our system root files in a place we can get to them. We call 
 this directory `SYSROOT`. Let's set our `$SYSROOT` 
 environment variable for easy access throughout the build process. Ensure that 
@@ -486,16 +484,16 @@ this directory is _not_ inside our `$RISCV` variable.
 #### The Linux Headers
 
 In an apparent case of circular dependence (but not
-_really_), we have to give the `riscv-linux-gcc` the location
+_really_), we have to give the `riscv64-unknown-linux-gnu-gcc` the location
 of the Linux headers. The Linux headers provide the details that Glibc needs to
 function properly (a prominent example is `include/asm/bitsperlong.h`, 
 which sets Glibc to be 64-bit or 32-bit). There's a copy of the headers in the
-`riscv-gcc` repository, so make a `usr/` directory in
+`riscv-gnu-toolchain` repository, so make a `usr/` directory in
 `$SYSROOT` and copy the contents of
-`riscv-gcc/linux-headers` into the newly created directory.
+`riscv-gnu-toolchain/linux-headers` into the newly created directory.
 
 	$ mkdir $SYSROOT/usr
-	$ cp -r $TOP/riscv-tools/riscv-gcc/linux-headers/* $SYSROOT/usr
+	$ cp -r $TOP/riscv-tools/riscv-gnu-toolchain/linux-headers/* $SYSROOT/usr
 
 (In the event that the kernel headers
 (anything inside `arch/riscv/include/asm/` or in
@@ -504,13 +502,13 @@ generate a new set of Linux headers - see [here](#linux-headers-install).)
 
 <a name="linux-headers-install-back"></a>
 
-Enter the `riscv-gcc` directory within the
+Enter the `riscv-gnu-toolchain` directory within the
 `riscv-tools` repository, and patch up `Makefile.in` with
 this patch: [sysroot-Makefile.in.patch]("http://riscv.org/install-guides/sysroot-Makefile.in.patch"). This patch adjusts the build system to accept the
 `--with-sysroot` configuration flag for the relevant make targets.
 (Credit to a_ou for the file from which I made this patch.) Use this line to patch it up:
 
-	$ cd $TOP/riscv-tools/riscv-gcc
+	$ cd $TOP/riscv-tools/riscv-gnu-toolchain
 	$ curl -L http://riscv.org/install-guides/sysroot-Makefile.in.patch | patch -p1
 
 When that's done, run the configure script to generate the 
@@ -519,15 +517,15 @@ Makefile.
 	$ ./configure
 
 These instructions will place your
-`riscv-linux-gcc` tools in the same installation directory as the
-`riscv-gcc` tool installed earlier. This arrangement is the simplest,
-but if you would like to place them in a different directory, see [here](#different-riscv-linux-gcc-directory).
+`riscv64-unknown-linux-gnu-gcc` tools in the same installation directory as the
+`riscv64-unknown-elf-gcc` tool installed earlier. This arrangement is the simplest,
+but if you would like to place them in a different directory, see [here](#different-riscv64-unknown-linux-gnu-gcc-directory).
 
 Run this command to start the build process:
 
 	$ make linux INSTALL_DIR=$RISCV SYSROOT=$SYSROOT
 
-<a name="different-riscv-linux-gcc-directory-back"></a>
+<a name="different-riscv64-unknown-linux-gnu-gcc-directory-back"></a>
 
 Take note that we supply _both_ the variables
 `INSTALL_DIR` and `SYSROOT`. Even though we are diverting
@@ -535,10 +533,10 @@ some files to the `$SYSROOT` directory, we still have to place the
 cross-compiler somewhere. That's where `INSTALL_DIR` comes into
 play.
 
-When we originally built `riscv-gcc`, we built it
+When we originally built `riscv64-unknown-elf-gcc`, we built it
 using the "newlib" makefile target (in
-`riscv-tools/riscv-gcc/Makefile`). This "linux" target builds
-`riscv-linux-gcc` with glibc (and the Linux kernel headers). Because
+`riscv-tools/riscv-gnu-toolchain/Makefile`). This "linux" target builds
+`riscv64-unknown-linux-gnu-gcc` with glibc (and the Linux kernel headers). Because
 we now have to build glibc, it will take much more time. If you don't have the 
 power of a 16 core machine with you, maybe it's time to get a cup of coffee.
 
@@ -547,7 +545,7 @@ power of a 16 core machine with you, maybe it's time to get a cup of coffee.
 ### Obtaining and Patching the Kernel Sources
 
 We are finally poised to bring in the Linux kernel sources.
-Change out of the `riscv-tools/riscv-gcc` directory and clone the 
+Change out of the `riscv-tools/riscv-gnu-toolchain` directory and clone the 
 `riscv-linux` Git repository into this directory:
 `linux-3.14._xx_`, where _xx_ represents the current
 minor revision (which, as early September 2014, is "19").
@@ -826,8 +824,8 @@ referred here instead.
 
 ### <a name="full-toolchain-build"></a> Building the Full Toolchain (7.62 SBU)
 
-If you want to build `riscv-gcc` (as
-_distinct_ from `riscv-linux-gcc`), `riscv-pk`, and
+If you want to build `riscv64-unknown-elf-gcc` (as
+_distinct_ from `riscv64-unknown-linux-gnu-gcc`), `riscv-pk`, and
 `riscv-tests`, then simply run the full build script rather than the
 abbreviated one I provided.
 
@@ -839,7 +837,7 @@ abbreviated one I provided.
 
 If you (or someone you know) has changed the Linux headers,
 you'll need to install a new version to your system root before you build
-`riscv-linux-gcc` to make sure the kernel and the C library agree on
+`riscv64-unknown-linux-gnu-gcc` to make sure the kernel and the C library agree on
 their interfaces. (Note that you'll need to pull in the Linux kernel sources
 before you perform these steps. If you haven't, do so now.)
 
@@ -857,9 +855,9 @@ Once the headers have been checked, install them.
 
 [Return to text.](#linux-headers-install-back)	
 
-### <a name="different-riscv-linux-gcc-directory"></a> Installing `riscv-linux-gcc` to a Different Directory than `riscv-gcc`
+### <a name="different-riscv64-unknown-linux-gnu-gcc-directory"></a> Installing `riscv64-unknown-linux-gnu-gcc` to a Different Directory than `riscv64-unknown-elf-gcc`
 
-It may be desirable to install `riscv-linux-gcc`
+It may be desirable to install `riscv64-unknown-linux-gnu-gcc`
 to a different directory. If that is the case, then run these commands instead
 of the ones prescribed at the end of the section:
 
@@ -874,7 +872,7 @@ to be installed. Then, add `$RISCV_LINUX_GCC/bin` to your
 specifying `$RISCV_LINUX_GCC` as the target installation
 directory.
 
-[Return to text.](#different-riscv-linux-gcc-directory-back)
+[Return to text.](#different-riscv64-unknown-linux-gnu-gcc-directory-back)
 
 ### <a name="using-fuse"></a> Using Filesystem in Userspace (FUSE) to Create a Disk Image
 
@@ -915,7 +913,7 @@ If BusyBox calls for additional libraries (e.g.
 `libm`), you will need to include those as well.
 
 These were built when we compiled
-`riscv-linux-gcc` and were placed in `$SYSROOT`. So, mount
+`riscv64-unknown-linux-gnu-gcc` and were placed in `$SYSROOT`. So, mount
 your root disk (if not mounted already), cd into it, and copy the libraries into
 `lib`:
 
@@ -943,142 +941,6 @@ Then, rebuild and reinstall BusyBox into `mnt/bin`.
 	O$ cp $TOP/busybox-1.21.1/busybox bin
 
 [Return to text.](#dynamic-busybox-back)
-
-## <a name="appendices"></a> Appendices
-
-		
-
-### <a name="building-native-compiler"></a> Building the Native Compiler (3.19 SBU)
-
-GCC is a complicated beast, to say the least. As of this
-writing, the configuration to build a version of RISC-V GCC that runs on
-Linux/RISC-V is still located on the "native" branch of the
-`riscv-gcc` repository. If you desire, read on to build the native
-compiler...
-
-First, we'll need to make a bigger disk image. A size of 256
-MiB seems to be plenty enough. Then, fill it with all of the goodies from the
-example root image.
-
-	$ cd $TOP/linux-3.14.19
-	$ dd if=/dev/zero of=root-gcc.img bs=1M count=256
-	$ mkfs.ext2 -F root-gcc.img
-	$ mkdir mnt-gcc
-	$ sudo mount -o loop root-gcc.img mnt-gcc
-	$ cd mnt-gcc
-	$ mkdir -p mkdir -p bin etc dev lib proc sbin tmp usr usr/bin usr/lib usr/sbin
-	$ curl -L http://riscv.org/install-guides/linux-inittab > etc/inittab
-
-If you want a better text editor than piping
-`echo` to a file, now is the time to rebuild BusyBox with
-`vi`. These instructions will assume you've got the original BusyBox
-binary. Either way, copy it into `bin`, and set up the
-`init` symlink.
-
-	$ cp $TOP/busybox-1.21.1/busybox bin/
-	$ ln -s ../bin/busybox sbin/init
-
-Now, let's build the native compiler. Change into the
-`riscv-gcc` repository, clean up the other things, and then 
-check out the "native" branch.
-
-	$ cd $TOP/riscv-tools/riscv-gcc
-	$ make clean
-	$ git checkout native
-
-We'll need to apply a bothersome and hackish patch to GCC so
-that `SSIZE_MAX` is defined. I really didn't want to do this, but it
-will suffice for now.
-
-	$ patch -p1 < native-patches/native-host-linux.patch
-
-In case if you're wondering, `native-patches/`
-also contains augmented configuration files for the MPC, GMP, and MPFR libraries
-so that it will recognize `riscv` as a machine. Someday, we hope that
-we won't have to patch it.
-
-Now, we are ready to build the native compiler. Run the
-configure script to generate a fresh Makefile, and then invoke
-`make` with this command:
-
-	$ ./configure
-	$ make native SYSROOT=$SYSROOT
-
-Note that we've only supplied `$SYSROOT`, because
-this compiler only runs within Linux/RISC-V. Therefore, we should place it along
-with our other files in `$SYSROOT`.
-
-During the build process, your
-machine will automatically fetch the sources for GMP, MPC, and MPFR (the GNU
-Multi Precision Arithmetic Library, the GNU Multi Precision C Library, and the
-GNU Multiple Precision Floating-Point Reliably Library). It will patch the
-sources as previously described, and then it will automatically build them, too.
-(They'll be removed at the end of the native build once it's complete because
-they will interfere with building the "newlib" or "linux" Makefile targets.)
-
-Once the build is complete, your binaries will be located in
-`$SYSROOT/usr/bin`. It would be easy enough to copy out
-`gcc`, but there are a bunch of other files that are needed for it to
-run properly. We'll copy those now.
-
-	$ cd $TOP/linux-3.14.19/mnt-gcc
-	$ cp $SYSROOT/usr/bin/gcc usr/bin
-	$ cp $SYSROOT/usr/bin/{as,ld,readelf} usr/bin
-	$ cp $SYSROOT/usr/lib/crt{1,i,n}.o usr/lib
-	$ cp $SYSROOT/usr/lib/libc.a usr/lib
-	$ mkdir usr/libexec
-	$ cp -r $SYSROOT/usr/libexec/gcc usr/libexec
-	$ cp -r $SYSROOT/usr/lib/gcc usr/lib
-	$ cp $SYSROOT/lib/ld.so.1 lib
-	$ cp $SYSROOT/lib/libc.so.6 lib
-	$ cp $SYSROOT/lib/libdl.so.2 lib
-	$ cp $SYSROOT/usr/lib/libgcc_s.so* lib
-	$ cp -r $SYSROOT/usr/include usr/
-
-I could tell you what the importance of these libraries are, but
-you can learn it yourself: try excluding any of the libraries and see if your
-program works at all.
-
-Change out of the directory, unmount the root disk image, and
-then boot the kernel.
-
-	$ cd ..
-	$ sudo umount mnt-gcc
-	$ spike +disk=root-gcc.img vmlinux
-
-In a short moment, the Linux kernel will boot. If you haven't
-done anything special to your shell or your user configuration, you'll soon be 
-at a root prompt:
-
-	#
-
-Use `echo`, hopefully built-in to your
-`ash` applet, to write out a short "Hello world!" program:
-
-	# echo -e '#include <stdio.h>\n int main(void) { printf("Hello world!\\n"); return 0; }' > /tmp/hello.c
-
-Invoke `gcc`.
-
-	# gcc -o /tmp/hello /tmp/hello.c
-
-Wait for a dreadfully long time, and then run your hello
-world program on Linux/RISC-V.
-
-	# /tmp/hello
-	Hello world!
-
-Congratulations! You've got a native `gcc` working
-on your system! If
-you get this far, think about it. You've used an x86 GCC compiler to compile
-`riscv-linux-gcc`, an x86 to RISC-V cross-compiler. Then, you used
-`riscv-linux-gcc` to compile the _native_ version of GCC,
-which runs on Linux/RISC-V to compile RISC-V binaries. If your head isn't
-spinning from all that meta, you may consider reading Hofstadter.
-
-<img src="http://riscv.org/install-guides/linux-hello-world.png"/>
-
-_"Hello world!" compiled and run on Linux/RISC-V and readelf output._
-
 
 ## <a name="references"></a> References
 
