@@ -9,12 +9,8 @@ then
   exit 1
 fi
 
-if [ ! -f gmake ]
-then
-  MAKE=gmake
-else
-  MAKE=make
-fi
+# Use gmake instead of make if it exists.
+MAKE=`command -v gmake || command -v make`
 
 PATH="$RISCV/bin:$PATH"
 #GCC_VERSION=`gcc -v 2>&1 | tail -1 | awk '{print $3}'`
