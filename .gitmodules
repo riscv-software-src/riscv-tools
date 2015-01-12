@@ -7,9 +7,6 @@
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = https://github.com/ucb-bar/riscv-pk.git
-[submodule "riscv-gcc"]
-	path = riscv-gcc
-	url = https://github.com/ucb-bar/riscv-gcc.git
 [submodule "riscv-opcodes"]
 	path = riscv-opcodes
 	url = https://github.com/ucb-bar/riscv-opcodes.git
@@ -22,3 +19,6 @@
 [submodule "riscv-qemu"]
 	path = riscv-qemu
 	url = https://github.com/ucb-bar/riscv-qemu.git
+[submodule "riscv-gnu-toolchain"]
+	path = riscv-gnu-toolchain
+	url = https://github.com/ucb-bar/riscv-gnu-toolchain.git
