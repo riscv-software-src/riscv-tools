@@ -454,91 +454,20 @@ cross-compiler used to build binaries linked to the GNU C Library
 `riscv64-unknown-elf-gcc`, but you will need `riscv64-unknown-linux-gnu-gcc` to
 cross-compile applications, so we will build that instead.
 
-#### The `SYSROOT` Concept
+Enter the `riscv-gnu-toolchain` directory and run the configure script
+to generate the Makefile.
 
-When installing these toolchains, the `make`
-system often generates a wide variety of libraries and other files. In
-particular, building Glibc involves building the run-time dynamic linker and the
-C standard library (`ld.so.1` and `libc.so.6`, in this
-case). These, together with header files like `stdio.h`, comprise the
-_system root_, an often-necessary set of files for a fully operational 
-system.
-
-When we built `riscv-tools`, there was no need
-for specifying where to install these files, because we assumed we would always
-be running on the host machine through a simulator; all of the libraries are on
-the _host_ system. Now that we're running our binaries from within an
-operating system, we will have to provide these libraries and headers if we want
-to run dynamically-linked binaries and compile programs natively.
-
-We now must instruct the `riscv64-unknown-linux-gnu-gcc` build 
-process to place our system root files in a place we can get to them. We call 
-this directory `SYSROOT`. Let's set our `$SYSROOT` 
-environment variable for easy access throughout the build process. Ensure that 
-this directory is _not_ inside our `$RISCV` variable.
-
-	$ cd $TOP
-	$ mkdir sysroot
-	$ export SYSROOT=$TOP/sysroot
-
-#### The Linux Headers
-
-In an apparent case of circular dependence (but not
-_really_), we have to give the `riscv64-unknown-linux-gnu-gcc` the location
-of the Linux headers. The Linux headers provide the details that Glibc needs to
-function properly (a prominent example is `include/asm/bitsperlong.h`, 
-which sets Glibc to be 64-bit or 32-bit). There's a copy of the headers in the
-`riscv-gnu-toolchain` repository, so make a `usr/` directory in
-`$SYSROOT` and copy the contents of
-`riscv-gnu-toolchain/linux-headers` into the newly created directory.
-
-	$ mkdir $SYSROOT/usr
-	$ cp -r $TOP/riscv-tools/riscv-gnu-toolchain/linux-headers/* $SYSROOT/usr
-
-(In the event that the kernel headers
-(anything inside `arch/riscv/include/asm/` or in
-`include/` are changed, you can use the Linux kernel Makefile to
-generate a new set of Linux headers - see [here](#linux-headers-install).)
-
-<a name="linux-headers-install-back"></a>
-
-Enter the `riscv-gnu-toolchain` directory within the
-`riscv-tools` repository, and patch up `Makefile.in` with
-this patch: [sysroot-Makefile.in.patch]("http://riscv.org/install-guides/sysroot-Makefile.in.patch"). This patch adjusts the build system to accept the
-`--with-sysroot` configuration flag for the relevant make targets.
-(Credit to a_ou for the file from which I made this patch.) Use this line to patch it up:
-
-	$ cd $TOP/riscv-tools/riscv-gnu-toolchain
-	$ curl -L http://riscv.org/install-guides/sysroot-Makefile.in.patch | patch -p1
-
-When that's done, run the configure script to generate the 
-Makefile.
-
-	$ ./configure
+	$ ./configure --prefix=$RISCV
 
 These instructions will place your
 `riscv64-unknown-linux-gnu-gcc` tools in the same installation directory as the
 `riscv64-unknown-elf-gcc` tool installed earlier. This arrangement is the simplest,
-but if you would like to place them in a different directory, see [here](#different-riscv64-unknown-linux-gnu-gcc-directory).
+but you could optionally supply a different prefix, so long as the bin directory
+within that prefix is in your PATH.
 
 Run this command to start the build process:
 
-	$ make linux INSTALL_DIR=$RISCV SYSROOT=$SYSROOT
-
-<a name="different-riscv64-unknown-linux-gnu-gcc-directory-back"></a>
-
-Take note that we supply _both_ the variables
-`INSTALL_DIR` and `SYSROOT`. Even though we are diverting
-some files to the `$SYSROOT` directory, we still have to place the
-cross-compiler somewhere. That's where `INSTALL_DIR` comes into
-play.
-
-When we originally built `riscv64-unknown-elf-gcc`, we built it
-using the "newlib" makefile target (in
-`riscv-tools/riscv-gnu-toolchain/Makefile`). This "linux" target builds
-`riscv64-unknown-linux-gnu-gcc` with glibc (and the Linux kernel headers). Because
-we now have to build glibc, it will take much more time. If you don't have the 
-power of a 16 core machine with you, maybe it's time to get a cup of coffee.
+	$ make linux
 
 ## <a name="building-linux"></a> Building the Linux Kernel (0.40 + &epsilon; SBU)
 
@@ -849,30 +778,11 @@ check:
 
 Once the headers have been checked, install them.
 
-	O$ make ARCH=riscv headers_install INSTALL_HDR_PATH=$SYSROOT/usr
+	O$ make ARCH=riscv headers_install INSTALL_HDR_PATH=$RISCV/sysroot64/usr
 
 (Substitute the path specified by `INSTALL_HDR_PATH` if so desired.)
 
 [Return to text.](#linux-headers-install-back)	
-
-### <a name="different-riscv64-unknown-linux-gnu-gcc-directory"></a> Installing `riscv64-unknown-linux-gnu-gcc` to a Different Directory than `riscv64-unknown-elf-gcc`
-
-It may be desirable to install `riscv64-unknown-linux-gnu-gcc`
-to a different directory. If that is the case, then run these commands instead
-of the ones prescribed at the end of the section:
-
-	O$ export RISCV_LINUX_GCC=[/path/to/different/directory]
-	O$ export PATH=$PATH:$RISCV_LINUX_GCC/bin
-	O$ make linux INSTALL_DIR=$RISCV_LINUX_GCC SYSROOT=$SYSROOT
-
-First, set the environment variable
-`$RISCV_LINUX_GCC` to the directory in which you want the new tools 
-to be installed. Then, add `$RISCV_LINUX_GCC/bin` to your
-`$PATH` environment variable. Finally, invoke `make`,
-specifying `$RISCV_LINUX_GCC` as the target installation
-directory.
-
-[Return to text.](#different-riscv64-unknown-linux-gnu-gcc-directory-back)
 
 ### <a name="using-fuse"></a> Using Filesystem in Userspace (FUSE) to Create a Disk Image
 
@@ -913,12 +823,12 @@ If BusyBox calls for additional libraries (e.g.
 `libm`), you will need to include those as well.
 
 These were built when we compiled
-`riscv64-unknown-linux-gnu-gcc` and were placed in `$SYSROOT`. So, mount
+`riscv64-unknown-linux-gnu-gcc` and were placed in `$RISCV/sysroot64`. So, mount
 your root disk (if not mounted already), cd into it, and copy the libraries into
 `lib`:
 
-	O$ cp $SYSROOT/lib/libc.so.6 lib/
-	O$ cp $SYSROOT/lib/ld.so.1 lib/
+	O$ cp $RISCV/sysroot64/lib/libc.so.6 lib/
+	O$ cp $RISCV/sysroot64/lib/ld.so.1 lib/
 
 That's it for the libraries. Go back to the BusyBox
 configuration and set BusyBox to be built as a dynamically-linked binary by
