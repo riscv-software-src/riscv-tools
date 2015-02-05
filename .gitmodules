@@ -12,7 +12,7 @@
 	url = https://github.com/ucb-bar/riscv-opcodes.git
 [submodule "riscv-tests"]
 	path = riscv-tests
-	url = https://github.com/wsong83/riscv-tests.git
+	url = https://github.com/lowRISC/riscv-tests.git
 [submodule "riscv-llvm"]
 	path = riscv-llvm
 	url = https://github.com/ucb-bar/riscv-llvm.git
@@ -21,4 +21,4 @@
 	url = https://github.com/ucb-bar/riscv-qemu.git
 [submodule "riscv-gnu-toolchain"]
 	path = riscv-gnu-toolchain
-	url = https://github.com/wsong83/riscv-gnu-toolchain.git
+	url = https://github.com/lowRISC/riscv-gnu-toolchain.git
