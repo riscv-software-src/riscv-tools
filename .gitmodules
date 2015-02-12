@@ -22,3 +22,6 @@
 [submodule "riscv-qemu"]
 	path = riscv-qemu
 	url = https://github.com/ucb-bar/riscv-qemu.git
+[submodule "riscv-linux"]
+	path = riscv-linux
+	url = https://github.com/riscv/riscv-linux
