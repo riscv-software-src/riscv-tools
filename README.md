@@ -1,4 +1,4 @@
-riscv-tools [![Build Status](https://travis-ci.org/ucb-bar/riscv-tools.svg?branch=master)](https://travis-ci.org/ucb-bar/riscv-tools) 
+riscv-tools [![Build Status](https://travis-ci.org/riscv/riscv-tools.svg?branch=master)](https://travis-ci.org/riscv/riscv-tools)
 ===========================================================================
 
 Three guides are available for this repo:
@@ -175,7 +175,7 @@ operating system proper, the simulator runs, on top of it, a proxy kernel
 First, clone the tools from the `riscv-tools` GitHub
 repository:
 
-	$ git clone https://github.com/ucb-bar/riscv-tools.git
+	$ git clone https://github.com/riscv/riscv-tools.git
 
 This command will bring in only references to the
 repositories that we will need. We rely on Git's submodule system to take care
@@ -381,10 +381,10 @@ components needed to simulate RISC-V binaries on the host machine. We will also 
 build `riscv64-unknown-linux-gnu-gcc`, but this involves a little modification of
 the build procedure for `riscv64-unknown-elf-gcc`.
 
-First, clone the tools from the `ucb-bar` GitHub
+First, clone the tools from the `riscv` GitHub
 repository:
 
-	$ git clone https://github.com/ucb-bar/riscv-tools.git
+	$ git clone https://github.com/riscv/riscv-tools.git
 
 This command will bring in only references to the
 repositories that we will need. We rely on Git's submodule system to take care
@@ -477,17 +477,17 @@ We are finally poised to bring in the Linux kernel sources.
 Change out of the `riscv-tools/riscv-gnu-toolchain` directory and clone the 
 `riscv-linux` Git repository into this directory:
 `linux-3.14._xx_`, where _xx_ represents the current
-minor revision (which, as early September 2014, is "19").
+minor revision (which, as of 11 February 2014, is "33").
 
 	$ cd $TOP
-	$ git clone git@github.com:ucb-bar/riscv-linux.git linux-3.14.19
+	$ git clone git@github.com:riscv/riscv-linux.git linux-3.14.33
 
 Download the current minor revision of the 3.14 Linux kernel series
 from [The Linux Kernel Archives](http://www.kernel.org), and in one fell
 swoop, untar them over our repository. (The `-k` switch ensures that
 our `.gitignore` and `README` files don't get clobbered.)
 
-	$ curl -L ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-3.14.19.tar.xz | tar -xJk
+	$ curl -L https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.14.33.tar.xz | tar -xJkf -
 
 
 ### Configuring the Linux Kernel
@@ -595,7 +595,7 @@ cross-compiled to run on RISC-V. Now we'll need a way for the kernel to access
 the binary, and we'll use a root disk image for that. Before we proceed, change
 back into the directory with the Linux sources.
 
-	$ cd $TOP/linux-3.14.19
+	$ cd $TOP/linux-3.14.33
 
 
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
@@ -629,7 +629,7 @@ You can modify this filesystem if you mount it as writable
 from within Linux/RISC-V. However, a better option, especially if you want to
 copy big binaries, is to mount it on your host machine. _You will normally
 need superuser privileges to do a mount._ Do so this way, assuming you want
-to mount the disk image at `linux-3.14.19/mnt`: 
+to mount the disk image at `linux-3.14.33/mnt`:
 
 	$ mkdir mnt
 	$ sudo mount -o loop root.bin mnt
@@ -656,7 +656,7 @@ inside. There are a few directories that you should have:
 So create them:
 
 	$ cd mnt
-	$ mkdir -p bin etc dev lib proc sbin tmp usr usr/bin usr/lib usr/sbin
+	$ mkdir -p bin etc dev lib proc sbin sys tmp usr usr/bin usr/lib usr/sbin
 
 Then, place the BusyBox executable we just compiled in
 `/bin`.
@@ -673,11 +673,11 @@ We will also need to prepare an initialization table in the
 aptly-named file `inittab`, placed in `/etc`. Here is the
 `inittab` from our disk image:
 
-	1 ::sysinit:/bin/busybox mount -t proc proc /proc
-	2 ::sysinit:/bin/busybox mount -t tmpfs tmpfs /tmp
-	3 ::sysinit:/bin/busybox mount -o remount,rw /dev/htifbd0 /
-	4 ::sysinit:/bin/busybox --install -s
-	5 /dev/console::sysinit:-/bin/ash
+	::sysinit:/bin/busybox mount -t proc proc /proc
+	::sysinit:/bin/busybox mount -t tmpfs tmpfs /tmp
+	::sysinit:/bin/busybox mount -o remount,rw /dev/htifblk0 /
+	::sysinit:/bin/busybox --install -s
+	/dev/console::sysinit:-/bin/ash
 
 Line 1 mounts the procfs filesystem onto `/proc`.
 Line 2 does similarly for tmpfs. Line 3 mounts the HTIF-virtualized block
@@ -773,7 +773,7 @@ before you perform these steps. If you haven't, do so now.)
 First, go to the Linux directory and perform a headers
 check:
 
-	O$ cd $TOP/linux-3.14.19
+	O$ cd $TOP/linux-3.14.33
 	$ make ARCH=riscv headers_check
 
 Once the headers have been checked, install them.
@@ -847,7 +847,7 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
 Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
 	O$ make -j
-	O$ cd $TOP/linux-3.14.19/mnt
+	O$ cd $TOP/linux-3.14.33/mnt
 	O$ cp $TOP/busybox-1.21.1/busybox bin
 
 [Return to text.](#dynamic-busybox-back)
