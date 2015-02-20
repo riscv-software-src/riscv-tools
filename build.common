@@ -9,6 +9,9 @@ then
   exit 1
 fi
 
+# Use gmake instead of make if it exists.
+MAKE=`command -v gmake || command -v make`
+
 PATH="$RISCV/bin:$PATH"
 #GCC_VERSION=`gcc -v 2>&1 | tail -1 | awk '{print $3}'`
 
@@ -26,9 +29,9 @@ function build_project {
   echo "Configuring project $1"
   ../configure $2 $3 $4 $5 $6 > build.log
   echo "Building project $1"
-  make -j$JOBS >> build.log
+  $MAKE -j$JOBS >> build.log
   echo "Installing project $1"
-  make -j$JOBS install >> build.log
+  $MAKE -j$JOBS install >> build.log
   cd - > /dev/null
 }
 
@@ -36,12 +39,12 @@ function build_tests {
   echo
   cd riscv-tests/isa > /dev/null
   echo "Building project riscv-tests/isa"
-  make -j$JOBS clean > /dev/null
-  make -j$JOBS > /dev/null
+  $MAKE -j$JOBS clean > /dev/null
+  $MAKE -j$JOBS > /dev/null
   cd - > /dev/null
   cd riscv-tests/benchmarks > /dev/null
   echo "Building project riscv-tests/benchmarks"
-  make -j$JOBS clean > /dev/null
-  make -j$JOBS > /dev/null
+  $MAKE -j$JOBS clean > /dev/null
+  $MAKE -j$JOBS > /dev/null
   cd - > /dev/null
 }

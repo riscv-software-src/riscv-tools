@@ -7,24 +7,12 @@
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = https://github.com/riscv/riscv-pk.git
-[submodule "riscv-gcc"]
-	path = riscv-gcc
-	url = https://github.com/riscv/riscv-gcc.git
 [submodule "riscv-opcodes"]
 	path = riscv-opcodes
 	url = https://github.com/riscv/riscv-opcodes.git
 [submodule "riscv-tests"]
 	path = riscv-tests
 	url = https://github.com/lowrisc/riscv-tests.git
-[submodule "riscv-llvm"]
-	path = riscv-llvm
-	url = https://github.com/riscv/riscv-llvm.git
-[submodule "riscv-qemu"]
-	path = riscv-qemu
-	url = https://github.com/riscv/riscv-qemu.git
-[submodule "riscv-linux"]
-	path = riscv-linux
-	url = https://github.com/riscv/riscv-linux
 [submodule "riscv-gnu-toolchain"]
 	path = riscv-gnu-toolchain
 	url = https://github.com/lowrisc/riscv-gnu-toolchain.git
