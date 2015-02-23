@@ -16,3 +16,6 @@
 [submodule "riscv-gnu-toolchain"]
 	path = riscv-gnu-toolchain
 	url = https://github.com/lowrisc/riscv-gnu-toolchain.git
+[submodule "lowrisc-tag-tests"]
+	path = lowrisc-tag-tests
+	url = https://github.com/wsong83/lowrisc-tag-tests.git
