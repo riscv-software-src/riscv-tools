@@ -3,7 +3,7 @@
 	url = https://github.com/riscv/riscv-isa-sim.git
 [submodule "riscv-fesvr"]
 	path = riscv-fesvr
-	url = https://github.com/wsong83/riscv-fesvr.git
+	url = https://github.com/lowrisc/riscv-fesvr.git
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = https://github.com/riscv/riscv-pk.git
@@ -18,4 +18,4 @@
 	url = https://github.com/lowrisc/riscv-gnu-toolchain.git
 [submodule "lowrisc-tag-tests"]
 	path = lowrisc-tag-tests
-	url = https://github.com/wsong83/lowrisc-tag-tests.git
+	url = https://github.com/lowrisc/lowrisc-tag-tests.git
