@@ -23,14 +23,7 @@ Ubuntu packages needed:
 
 	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
 
-
-Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
-To use a compiler different than the default (for example on OS X), use:
-
-	$ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
-
-
-
+Building `riscv-tools` requires GCC >= 4.8 for C++11 support.
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
@@ -110,9 +103,7 @@ not necessary.
 
 ### GCC Version
 
-Note: Building `riscv-tools` requires GCC >= 4.8 for C++11 support (including thread_local). To use a compiler different than the default (for example on OS X), you'll need to do the following when the guide requires you to run `build.sh`:
-
-	$ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
+Note that building `riscv-tools` requires GCC >= 4.8 for C++11 support.
 
 
 ## <a name="installing-toolchain-newlib"></a>Installing the Toolchain
@@ -217,7 +208,7 @@ handle 16 make jobs (or conversely, it can handle more), edit
 
 	O$ sed -i 's/JOBS=16/JOBS=[number]/' build.common
 
-With everything else set up, run the build script. Recall that if you're using a new-version of gcc that isn't the default on your system, you'll need to precede the `./build.sh` with `CC=gcc-4.8 CXX=g++-4.8`:
+With everything else set up, run the build script.
 
 	$ ./build.sh
 
