@@ -480,7 +480,7 @@ Change out of the `riscv-tools/riscv-gnu-toolchain` directory and clone the
 minor revision (which, as of 11 February 2014, is "33").
 
 	$ cd $TOP
-	$ git clone git@github.com:riscv/riscv-linux.git linux-3.14.33
+	$ git clone https://github.com/riscv/riscv-tools.git linux-3.14.33
 
 Download the current minor revision of the 3.14 Linux kernel series
 from [The Linux Kernel Archives](http://www.kernel.org), and in one fell
