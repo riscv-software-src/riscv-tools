@@ -718,10 +718,10 @@ execution. We will need to load in the root disk image through the
 `+disk` argument to `spike` as well. The command looks
 like this:
 
-	$ spike +disk=root.bin vmlinux
+	$ spike +disk=root.bin bbl vmlinux
 
-`vmlinux` is the name of the compiled Linux kernel
-binary.
+`vmlinux` is the name of the compiled Linux kernel binary, 
+and `bbl` is the Berkeley Boot Loader (available from the riscv-pk repository).
 
 If there are no problems, an `ash` prompt will
 appear after the boot process completes. It will be pretty useless without the
