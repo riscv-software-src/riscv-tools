@@ -13,3 +13,6 @@
 [submodule "riscv-gnu-toolchain"]
 	path = riscv-gnu-toolchain
 	url = https://github.com/ucb-bar/riscv-gnu-toolchain.git
+[submodule "lowrisc-tests"]
+	path = lowrisc-tests
+	url = https://github.com/lowrisc/lowrisc-tests.git
