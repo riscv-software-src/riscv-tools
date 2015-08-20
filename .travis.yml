@@ -26,7 +26,6 @@ addons:
 env:
   global:
     - RISCV="/home/travis/riscv_install"
-    - PATH="$PATH:$RISCV/bin"
 
 before_install:
   # make install destination
