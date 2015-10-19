@@ -520,7 +520,7 @@ specify the `ARCH=riscv` in each invocation of `make`.
 This line is no exception. If you want to speed up the process, you can pass the
 `-j [number]` option to make.
 
-	$ make -j ARCH=riscv
+	$ make -j16 ARCH=riscv
 
 Congratulations! You've just cross-compiled the Linux kernel
 for RISC-V! However, there are a few more things to take care of before we boot 
@@ -588,7 +588,7 @@ _BusyBox menuconfig interface. Looks familiar, eh?_
 Once you've finished, make BusyBox. You don't need to specify
 `$ARCH`, because we've passed the name of the cross-compiler prefix.
 
-	$ make -j
+	$ make -j16
 
 Once that completes, you now have a BusyBox binary
 cross-compiled to run on RISC-V. Now we'll need a way for the kernel to access
@@ -845,7 +845,7 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
 
 Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
-	O$ make -j
+	O$ make -j16
 	O$ cd $TOP/linux-3.14.33/mnt
 	O$ cp $TOP/busybox-1.21.1/busybox bin
 
