@@ -1,7 +1,7 @@
 riscv-tools [![Build Status](https://travis-ci.org/riscv/riscv-tools.svg?branch=master)](https://travis-ci.org/riscv/riscv-tools)
 ===========================================================================
 
-Three guides are available for this repo:
+This repo provides guides and references:
 
 1. [Quickstart](#quickstart)
 
@@ -9,6 +9,7 @@ Three guides are available for this repo:
 
 3. [The Linux/RISC-V Installation Manual](#linuxman)
 
+4. [References](#references)
 
 
 
@@ -281,17 +282,16 @@ website](http://ocf.berkeley.edu/~qmn/linux/install.html)
 
 1.  Introduction
 2.  Table of Contents
-3.  [Meta-installation Notes](#meta-installation-notes)
-4.  [Installing the Toolchain](#installing-toolchain)
+3.  [Meta-installation Notes](#meta-installation-notes-linux)
+4.  [Installing the Toolchain](#installing-toolchain-linux)
 5.  [Building the Linux Kernel](#building-linux)
 6.  [Building BusyBox](#building-busybox)
 7.  [Creating a Root Disk Image](#creating-root-disk)
-8.  ["Help! It doesn't work!"](#help-it-doesnt-work)
+8.  ["Help! It doesn't work!"](#help-it-doesnt-work-linux)
 9.  [Optional Commands](#optional-commands)
-10.  [References](#references)
 
 
-## <a name="meta-installation-notes"></a>Meta-installation Notes
+## <a name="meta-installation-notes-linux"></a>Meta-installation Notes
 
 ### Running Shell Commands
 
@@ -341,7 +341,7 @@ not necessary.
 
 		
 
-## <a name="installing-toolchain"></a> Installing the Toolchain (11.81 + &epsilon; SBU)
+## <a name="installing-toolchain-linux"></a> Installing the Toolchain (11.81 + &epsilon; SBU)
 
 Let's start with the directory in which we will install our
 tools. Find a nice, big expanse of hard drive space, and let's call that
@@ -424,7 +424,7 @@ handle 16 make jobs (or conversely, it can handle more), edit
 Since we only need to build a few tools, we will use a
 modified build script, listed in its entirety below. Remember that we'll build
 `riscv64-unknown-linux-gnu-gcc` shortly afterwards. If you want to build the full
-toolchain for later use, see <a href="#full-toolchain-build">here</a>.
+toolchain for later use, see <a href="#full-toolchain-build-linux">here</a>.
 
 
 	[basic-build.sh contents]
@@ -718,7 +718,7 @@ execution. We will need to load in the root disk image through the
 `+disk` argument to `spike` as well. The command looks
 like this:
 
-	$ spike +disk=root.bin vmlinux
+	$ spike +disk=root.bin bbl vmlinux
 
 `vmlinux` is the name of the compiled Linux kernel binary.
 
@@ -739,7 +739,7 @@ symbolic links to BusyBox applets. Otherwise, it will generate several
 (harmless) warnings in each subsequent boot.
 		
 
-## <a name="help-it-doesnt-work"></a> "Help! It doesn't work!"
+## <a name="help-it-doesnt-work-linux"></a> "Help! It doesn't work!"
 
 I know, I've been there too. Good luck!		
 
