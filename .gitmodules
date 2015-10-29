@@ -10,12 +10,12 @@
 [submodule "riscv-gnu-toolchain"]
 	path = riscv-gnu-toolchain
 	url = https://github.com/lowrisc/riscv-gnu-toolchain.git
-[submodule "lowrisc-tests"]
-	path = lowrisc-tests
-	url = https://github.com/lowrisc/lowrisc-tests.git
 [submodule "riscv-fesvr"]
 	path = riscv-fesvr
 	url = https://github.com/lowrisc/riscv-fesvr.git
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = https://github.com/lowrisc/riscv-pk.git
+[submodule "lowrisc-fsbl"]
+	path = lowrisc-fsbl
+	url = https://github.com/lowrisc/lowrisc-fsbl.git
