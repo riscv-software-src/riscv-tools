@@ -16,6 +16,3 @@
 [submodule "riscv-pk"]
 	path = riscv-pk
 	url = https://github.com/lowrisc/riscv-pk.git
-[submodule "lowrisc-fsbl"]
-	path = lowrisc-fsbl
-	url = https://github.com/lowrisc/lowrisc-fsbl.git
