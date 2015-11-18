@@ -48,3 +48,7 @@ function build_tests {
   $MAKE -j$JOBS > /dev/null
   cd - > /dev/null
 }
+
+# Local Variables:
+# mode: shell-script
+# End:

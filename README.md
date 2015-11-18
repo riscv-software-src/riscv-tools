@@ -1,7 +1,7 @@
-riscv-tools [![Build Status](https://travis-ci.org/ucb-bar/riscv-tools.svg?branch=master)](https://travis-ci.org/ucb-bar/riscv-tools) 
+riscv-tools [![Build Status](https://travis-ci.org/riscv/riscv-tools.svg?branch=master)](https://travis-ci.org/riscv/riscv-tools)
 ===========================================================================
 
-Three guides are available for this repo:
+This repo provides guides and references:
 
 1. [Quickstart](#quickstart)
 
@@ -9,6 +9,7 @@ Three guides are available for this repo:
 
 3. [The Linux/RISC-V Installation Manual](#linuxman)
 
+4. [References](#references)
 
 
 
@@ -21,7 +22,7 @@ Three guides are available for this repo:
 
 Ubuntu packages needed:
 
-	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool
 
 
 Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
@@ -175,7 +176,7 @@ operating system proper, the simulator runs, on top of it, a proxy kernel
 First, clone the tools from the `riscv-tools` GitHub
 repository:
 
-	$ git clone https://github.com/ucb-bar/riscv-tools.git
+	$ git clone https://github.com/riscv/riscv-tools.git
 
 This command will bring in only references to the
 repositories that we will need. We rely on Git's submodule system to take care
@@ -190,7 +191,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
@@ -281,17 +282,16 @@ website](http://ocf.berkeley.edu/~qmn/linux/install.html)
 
 1.  Introduction
 2.  Table of Contents
-3.  [Meta-installation Notes](#meta-installation-notes)
-4.  [Installing the Toolchain](#installing-toolchain)
+3.  [Meta-installation Notes](#meta-installation-notes-linux)
+4.  [Installing the Toolchain](#installing-toolchain-linux)
 5.  [Building the Linux Kernel](#building-linux)
 6.  [Building BusyBox](#building-busybox)
 7.  [Creating a Root Disk Image](#creating-root-disk)
-8.  ["Help! It doesn't work!"](#help-it-doesnt-work)
+8.  ["Help! It doesn't work!"](#help-it-doesnt-work-linux)
 9.  [Optional Commands](#optional-commands)
-10.  [References](#references)
 
 
-## <a name="meta-installation-notes"></a>Meta-installation Notes
+## <a name="meta-installation-notes-linux"></a>Meta-installation Notes
 
 ### Running Shell Commands
 
@@ -341,7 +341,7 @@ not necessary.
 
 		
 
-## <a name="installing-toolchain"></a> Installing the Toolchain (11.81 + &epsilon; SBU)
+## <a name="installing-toolchain-linux"></a> Installing the Toolchain (11.81 + &epsilon; SBU)
 
 Let's start with the directory in which we will install our
 tools. Find a nice, big expanse of hard drive space, and let's call that
@@ -381,10 +381,10 @@ components needed to simulate RISC-V binaries on the host machine. We will also 
 build `riscv64-unknown-linux-gnu-gcc`, but this involves a little modification of
 the build procedure for `riscv64-unknown-elf-gcc`.
 
-First, clone the tools from the `ucb-bar` GitHub
+First, clone the tools from the `riscv` GitHub
 repository:
 
-	$ git clone https://github.com/ucb-bar/riscv-tools.git
+	$ git clone https://github.com/riscv/riscv-tools.git
 
 This command will bring in only references to the
 repositories that we will need. We rely on Git's submodule system to take care
@@ -399,7 +399,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
@@ -424,7 +424,7 @@ handle 16 make jobs (or conversely, it can handle more), edit
 Since we only need to build a few tools, we will use a
 modified build script, listed in its entirety below. Remember that we'll build
 `riscv64-unknown-linux-gnu-gcc` shortly afterwards. If you want to build the full
-toolchain for later use, see <a href="#full-toolchain-build">here</a>.
+toolchain for later use, see <a href="#full-toolchain-build-linux">here</a>.
 
 
 	[basic-build.sh contents]
@@ -454,91 +454,20 @@ cross-compiler used to build binaries linked to the GNU C Library
 `riscv64-unknown-elf-gcc`, but you will need `riscv64-unknown-linux-gnu-gcc` to
 cross-compile applications, so we will build that instead.
 
-#### The `SYSROOT` Concept
+Enter the `riscv-gnu-toolchain` directory and run the configure script
+to generate the Makefile.
 
-When installing these toolchains, the `make`
-system often generates a wide variety of libraries and other files. In
-particular, building Glibc involves building the run-time dynamic linker and the
-C standard library (`ld.so.1` and `libc.so.6`, in this
-case). These, together with header files like `stdio.h`, comprise the
-_system root_, an often-necessary set of files for a fully operational 
-system.
-
-When we built `riscv-tools`, there was no need
-for specifying where to install these files, because we assumed we would always
-be running on the host machine through a simulator; all of the libraries are on
-the _host_ system. Now that we're running our binaries from within an
-operating system, we will have to provide these libraries and headers if we want
-to run dynamically-linked binaries and compile programs natively.
-
-We now must instruct the `riscv64-unknown-linux-gnu-gcc` build 
-process to place our system root files in a place we can get to them. We call 
-this directory `SYSROOT`. Let's set our `$SYSROOT` 
-environment variable for easy access throughout the build process. Ensure that 
-this directory is _not_ inside our `$RISCV` variable.
-
-	$ cd $TOP
-	$ mkdir sysroot
-	$ export SYSROOT=$TOP/sysroot
-
-#### The Linux Headers
-
-In an apparent case of circular dependence (but not
-_really_), we have to give the `riscv64-unknown-linux-gnu-gcc` the location
-of the Linux headers. The Linux headers provide the details that Glibc needs to
-function properly (a prominent example is `include/asm/bitsperlong.h`, 
-which sets Glibc to be 64-bit or 32-bit). There's a copy of the headers in the
-`riscv-gnu-toolchain` repository, so make a `usr/` directory in
-`$SYSROOT` and copy the contents of
-`riscv-gnu-toolchain/linux-headers` into the newly created directory.
-
-	$ mkdir $SYSROOT/usr
-	$ cp -r $TOP/riscv-tools/riscv-gnu-toolchain/linux-headers/* $SYSROOT/usr
-
-(In the event that the kernel headers
-(anything inside `arch/riscv/include/asm/` or in
-`include/` are changed, you can use the Linux kernel Makefile to
-generate a new set of Linux headers - see [here](#linux-headers-install).)
-
-<a name="linux-headers-install-back"></a>
-
-Enter the `riscv-gnu-toolchain` directory within the
-`riscv-tools` repository, and patch up `Makefile.in` with
-this patch: [sysroot-Makefile.in.patch]("http://riscv.org/install-guides/sysroot-Makefile.in.patch"). This patch adjusts the build system to accept the
-`--with-sysroot` configuration flag for the relevant make targets.
-(Credit to a_ou for the file from which I made this patch.) Use this line to patch it up:
-
-	$ cd $TOP/riscv-tools/riscv-gnu-toolchain
-	$ curl -L http://riscv.org/install-guides/sysroot-Makefile.in.patch | patch -p1
-
-When that's done, run the configure script to generate the 
-Makefile.
-
-	$ ./configure
+	$ ./configure --prefix=$RISCV
 
 These instructions will place your
 `riscv64-unknown-linux-gnu-gcc` tools in the same installation directory as the
 `riscv64-unknown-elf-gcc` tool installed earlier. This arrangement is the simplest,
-but if you would like to place them in a different directory, see [here](#different-riscv64-unknown-linux-gnu-gcc-directory).
+but you could optionally supply a different prefix, so long as the bin directory
+within that prefix is in your PATH.
 
 Run this command to start the build process:
 
-	$ make linux INSTALL_DIR=$RISCV SYSROOT=$SYSROOT
-
-<a name="different-riscv64-unknown-linux-gnu-gcc-directory-back"></a>
-
-Take note that we supply _both_ the variables
-`INSTALL_DIR` and `SYSROOT`. Even though we are diverting
-some files to the `$SYSROOT` directory, we still have to place the
-cross-compiler somewhere. That's where `INSTALL_DIR` comes into
-play.
-
-When we originally built `riscv64-unknown-elf-gcc`, we built it
-using the "newlib" makefile target (in
-`riscv-tools/riscv-gnu-toolchain/Makefile`). This "linux" target builds
-`riscv64-unknown-linux-gnu-gcc` with glibc (and the Linux kernel headers). Because
-we now have to build glibc, it will take much more time. If you don't have the 
-power of a 16 core machine with you, maybe it's time to get a cup of coffee.
+	$ make linux
 
 ## <a name="building-linux"></a> Building the Linux Kernel (0.40 + &epsilon; SBU)
 
@@ -548,17 +477,17 @@ We are finally poised to bring in the Linux kernel sources.
 Change out of the `riscv-tools/riscv-gnu-toolchain` directory and clone the 
 `riscv-linux` Git repository into this directory:
 `linux-3.14._xx_`, where _xx_ represents the current
-minor revision (which, as early September 2014, is "19").
+minor revision (which, as of 11 February 2014, is "33").
 
 	$ cd $TOP
-	$ git clone git@github.com:ucb-bar/riscv-linux.git linux-3.14.19
+	$ git clone https://github.com/riscv/riscv-linux.git linux-3.14.33
 
 Download the current minor revision of the 3.14 Linux kernel series
 from [The Linux Kernel Archives](http://www.kernel.org), and in one fell
 swoop, untar them over our repository. (The `-k` switch ensures that
 our `.gitignore` and `README` files don't get clobbered.)
 
-	$ curl -L ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-3.14.19.tar.xz | tar -xJk
+	$ curl -L https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.14.33.tar.xz | tar -xJkf -
 
 
 ### Configuring the Linux Kernel
@@ -591,7 +520,7 @@ specify the `ARCH=riscv` in each invocation of `make`.
 This line is no exception. If you want to speed up the process, you can pass the
 `-j [number]` option to make.
 
-	$ make -j ARCH=riscv
+	$ make -j16 ARCH=riscv
 
 Congratulations! You've just cross-compiled the Linux kernel
 for RISC-V! However, there are a few more things to take care of before we boot 
@@ -659,14 +588,14 @@ _BusyBox menuconfig interface. Looks familiar, eh?_
 Once you've finished, make BusyBox. You don't need to specify
 `$ARCH`, because we've passed the name of the cross-compiler prefix.
 
-	$ make -j
+	$ make -j16
 
 Once that completes, you now have a BusyBox binary
 cross-compiled to run on RISC-V. Now we'll need a way for the kernel to access
 the binary, and we'll use a root disk image for that. Before we proceed, change
 back into the directory with the Linux sources.
 
-	$ cd $TOP/linux-3.14.19
+	$ cd $TOP/linux-3.14.33
 
 
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
@@ -700,7 +629,7 @@ You can modify this filesystem if you mount it as writable
 from within Linux/RISC-V. However, a better option, especially if you want to
 copy big binaries, is to mount it on your host machine. _You will normally
 need superuser privileges to do a mount._ Do so this way, assuming you want
-to mount the disk image at `linux-3.14.19/mnt`: 
+to mount the disk image at `linux-3.14.33/mnt`:
 
 	$ mkdir mnt
 	$ sudo mount -o loop root.bin mnt
@@ -727,7 +656,7 @@ inside. There are a few directories that you should have:
 So create them:
 
 	$ cd mnt
-	$ mkdir -p bin etc dev lib proc sbin tmp usr usr/bin usr/lib usr/sbin
+	$ mkdir -p bin etc dev lib proc sbin sys tmp usr usr/bin usr/lib usr/sbin
 
 Then, place the BusyBox executable we just compiled in
 `/bin`.
@@ -744,11 +673,11 @@ We will also need to prepare an initialization table in the
 aptly-named file `inittab`, placed in `/etc`. Here is the
 `inittab` from our disk image:
 
-	1 ::sysinit:/bin/busybox mount -t proc proc /proc
-	2 ::sysinit:/bin/busybox mount -t tmpfs tmpfs /tmp
-	3 ::sysinit:/bin/busybox mount -o remount,rw /dev/htifbd0 /
-	4 ::sysinit:/bin/busybox --install -s
-	5 /dev/console::sysinit:-/bin/ash
+	::sysinit:/bin/busybox mount -t proc proc /proc
+	::sysinit:/bin/busybox mount -t tmpfs tmpfs /tmp
+	::sysinit:/bin/busybox mount -o remount,rw /dev/htifblk0 /
+	::sysinit:/bin/busybox --install -s
+	/dev/console::sysinit:-/bin/ash
 
 Line 1 mounts the procfs filesystem onto `/proc`.
 Line 2 does similarly for tmpfs. Line 3 mounts the HTIF-virtualized block
@@ -789,10 +718,9 @@ execution. We will need to load in the root disk image through the
 `+disk` argument to `spike` as well. The command looks
 like this:
 
-	$ spike +disk=root.bin vmlinux
+	$ spike +disk=root.bin bbl vmlinux
 
-`vmlinux` is the name of the compiled Linux kernel
-binary.
+`vmlinux` is the name of the compiled Linux kernel binary.
 
 If there are no problems, an `ash` prompt will
 appear after the boot process completes. It will be pretty useless without the
@@ -811,7 +739,7 @@ symbolic links to BusyBox applets. Otherwise, it will generate several
 (harmless) warnings in each subsequent boot.
 		
 
-## <a name="help-it-doesnt-work"></a> "Help! It doesn't work!"
+## <a name="help-it-doesnt-work-linux"></a> "Help! It doesn't work!"
 
 I know, I've been there too. Good luck!		
 
@@ -844,35 +772,16 @@ before you perform these steps. If you haven't, do so now.)
 First, go to the Linux directory and perform a headers
 check:
 
-	O$ cd $TOP/linux-3.14.19
+	O$ cd $TOP/linux-3.14.33
 	$ make ARCH=riscv headers_check
 
 Once the headers have been checked, install them.
 
-	O$ make ARCH=riscv headers_install INSTALL_HDR_PATH=$SYSROOT/usr
+	O$ make ARCH=riscv headers_install INSTALL_HDR_PATH=$RISCV/sysroot64/usr
 
 (Substitute the path specified by `INSTALL_HDR_PATH` if so desired.)
 
 [Return to text.](#linux-headers-install-back)	
-
-### <a name="different-riscv64-unknown-linux-gnu-gcc-directory"></a> Installing `riscv64-unknown-linux-gnu-gcc` to a Different Directory than `riscv64-unknown-elf-gcc`
-
-It may be desirable to install `riscv64-unknown-linux-gnu-gcc`
-to a different directory. If that is the case, then run these commands instead
-of the ones prescribed at the end of the section:
-
-	O$ export RISCV_LINUX_GCC=[/path/to/different/directory]
-	O$ export PATH=$PATH:$RISCV_LINUX_GCC/bin
-	O$ make linux INSTALL_DIR=$RISCV_LINUX_GCC SYSROOT=$SYSROOT
-
-First, set the environment variable
-`$RISCV_LINUX_GCC` to the directory in which you want the new tools 
-to be installed. Then, add `$RISCV_LINUX_GCC/bin` to your
-`$PATH` environment variable. Finally, invoke `make`,
-specifying `$RISCV_LINUX_GCC` as the target installation
-directory.
-
-[Return to text.](#different-riscv64-unknown-linux-gnu-gcc-directory-back)
 
 ### <a name="using-fuse"></a> Using Filesystem in Userspace (FUSE) to Create a Disk Image
 
@@ -913,12 +822,12 @@ If BusyBox calls for additional libraries (e.g.
 `libm`), you will need to include those as well.
 
 These were built when we compiled
-`riscv64-unknown-linux-gnu-gcc` and were placed in `$SYSROOT`. So, mount
+`riscv64-unknown-linux-gnu-gcc` and were placed in `$RISCV/sysroot64`. So, mount
 your root disk (if not mounted already), cd into it, and copy the libraries into
 `lib`:
 
-	O$ cp $SYSROOT/lib/libc.so.6 lib/
-	O$ cp $SYSROOT/lib/ld.so.1 lib/
+	O$ cp $RISCV/sysroot64/lib/libc.so.6 lib/
+	O$ cp $RISCV/sysroot64/lib/ld.so.1 lib/
 
 That's it for the libraries. Go back to the BusyBox
 configuration and set BusyBox to be built as a dynamically-linked binary by
@@ -936,8 +845,8 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
 
 Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
-	O$ make -j
-	O$ cd $TOP/linux-3.14.19/mnt
+	O$ make -j16
+	O$ cd $TOP/linux-3.14.33/mnt
 	O$ cp $TOP/busybox-1.21.1/busybox bin
 
 [Return to text.](#dynamic-busybox-back)
