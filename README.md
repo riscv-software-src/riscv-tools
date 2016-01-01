@@ -28,9 +28,11 @@ Ubuntu packages needed:
 Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
 To use a compiler different than the default (for example on OS X), use:
 
-	$ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
+	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
+One way to get a working gcc is to install [Homebrew](http://brew.sh) and issue
 
+	$ brew install gcc
 
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
