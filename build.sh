@@ -14,10 +14,10 @@ while [[ "$1" != "" ]]
 do
     case $1 in
     --xlen)       xlen="$2"; shift;;
-    --linux)      elin="--enable-linux"; platform="linux-gnu";;
-    --elf)        elin="--disable-linux"; platform="elf";;
-    --RVG)        isa="--enable-atomic --enable-float"; spike_isa="G";;
-    --RVI)        isa="--disable-atomic --disable-float"; spike_isa="I";;
+    --linux)      tool_flags="--enable-linux"; platform="linux-gnu";;
+    --elf)        tool_flags="--disable-linux"; platform="elf";;
+    --RVG)        isa="G";;
+    --RVI)        isa="I"; pk_flags="--disable-atomics";;
     *)            echo "Unrecongnized option:$1"; exit 1;;
     esac
 
@@ -26,8 +26,8 @@ done
 
 build_project riscv-fesvr --prefix=$RISCV
 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
-build_project riscv-gnu-toolchain --prefix=$RISCV $elin --with-xlen=$xlen --disable-multilib $isa
-CC= CXX= build_project riscv-pk --prefix=$RISCV/riscv$xlen-unknown-$platform --host=riscv$xlen-unknown-$platform
-RISCV_PREFIX="riscv$xlen-unknown-$platform-" RISCV_SIM="spike --isa=RV$xlen$spike_isa " XLEN=$xlen build_project riscv-tests --prefix=$RISCV/riscv$xlen-unknown-$platform --host=riscv$xlen-unknown-$platform
+build_project riscv-gnu-toolchain --prefix=$RISCV $tool_flags --disable-multilib --with-xlen=$xlen --with-arch=$isa
+CC= CXX= build_project riscv-pk --prefix=$RISCV/riscv$xlen-unknown-$platform --host=riscv$xlen-unknown-$platform $pk_flags
+RISCV_PREFIX="riscv$xlen-unknown-$platform-" RISCV_SIM="spike --isa=RV$xlen$isa " XLEN=$xlen build_project riscv-tests --prefix=$RISCV/riscv$xlen-unknown-$platform --host=riscv$xlen-unknown-$platform
 
 echo -e "\\nRISC-V Toolchain installation completed!"
