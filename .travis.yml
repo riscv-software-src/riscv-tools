@@ -8,8 +8,8 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.8
-      - g++-4.8
+      - gcc-4.9
+      - g++-4.9
       - gperf
       - autoconf
       - automake
@@ -26,6 +26,12 @@ addons:
 env:
   global:
     - RISCV="/home/travis/riscv_install"
+  matrix:
+    - TOOLCHAIN="--xlen 64 --elf --RVG"
+    - TOOLCHAIN="--xlen 64 --linux --RVG"
+    - TOOLCHAIN="--xlen 32 --elf --RVG"
+    - TOOLCHAIN="--xlen 32 --linux --RVG"
+    - TOOLCHAIN="--xlen 32 --elf --RVI"
 
 before_install:
   # make install destination
@@ -35,11 +41,11 @@ before_install:
   - git submodule update --init
   - cd ..
   # actually use new gcc
-  - export CXX=g++-4.8 CC=gcc-4.8
+  - export CXX=g++-4.9 CC=gcc-4.9
   # only have 2 cores on the travis machine
   - sed -i.bak 's/JOBS=16/JOBS=8/' build.common
 
 # extra time duing long builds
 install: travis_wait
 
-script: ./build.sh
+script: ./build.sh $TOOLCHAIN
