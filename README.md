@@ -427,23 +427,16 @@ modified build script, listed in its entirety below. Remember that we'll build
 toolchain for later use, see <a href="#full-toolchain-build-linux">here</a>.
 
 
-	[basic-build.sh contents]
+	[build-spike-only.sh contents]
 	1 #!/bin/bash
 	2 . build.common
 	3 build_project riscv-fesvr --prefix=$RISCV
 	4 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 
 
-Download this script using this command:
+Run the build script.
 
-	$ curl -L http://riscv.org/install-guides/linux-build.sh > basic-build.sh
-
-(The `-L` option allows curl to handle redirects.)
-Make the script executable, and with everything else taken care of, run the
-build script.
-
-	$ chmod +x basic-build.sh
-	$ ./basic-build.sh
+	$ ./build-spike-only.sh
 	
 
 ### <a name="full-toolchain-build-back"></a> Building `riscv64-unknown-linux-gnu-gcc` (11.41 SBU)
