@@ -35,20 +35,6 @@ function build_project {
   cd - > /dev/null
 }
 
-function build_tests {
-  echo
-  cd riscv-tests/isa > /dev/null
-  echo "Building project riscv-tests/isa"
-  $MAKE -j$JOBS clean > /dev/null
-  $MAKE -j$JOBS > /dev/null
-  cd - > /dev/null
-  cd riscv-tests/benchmarks > /dev/null
-  echo "Building project riscv-tests/benchmarks"
-  $MAKE -j$JOBS clean > /dev/null
-  $MAKE -j$JOBS > /dev/null
-  cd - > /dev/null
-}
-
 # Local Variables:
 # mode: shell-script
 # End:

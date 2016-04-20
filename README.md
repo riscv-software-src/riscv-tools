@@ -22,15 +22,15 @@ This repo provides guides and references:
 
 Ubuntu packages needed:
 
-	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool
+	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc
 
 
-Note: This requires GCC >= 4.8 for C++11 support (including thread_local).
-To use a compiler different than the default (for example on OS X), use:
+_Note:_ This requires a compiler with C++11 support (e.g. GCC >= 4.8).
+To use a compiler different than the default, use:
 
-	$ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
+	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
-
+_Note for OS X:_ We recommend using [Homebrew](http://brew.sh) to install the dependencies (`gawk gnu-sed gmp mpfr libmpc isl`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
 
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
@@ -191,7 +191,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool
+	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
@@ -427,23 +427,16 @@ modified build script, listed in its entirety below. Remember that we'll build
 toolchain for later use, see <a href="#full-toolchain-build-linux">here</a>.
 
 
-	[basic-build.sh contents]
+	[build-spike-only.sh contents]
 	1 #!/bin/bash
 	2 . build.common
 	3 build_project riscv-fesvr --prefix=$RISCV
 	4 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 
 
-Download this script using this command:
+Run the build script.
 
-	$ curl -L http://riscv.org/install-guides/linux-build.sh > basic-build.sh
-
-(The `-L` option allows curl to handle redirects.)
-Make the script executable, and with everything else taken care of, run the
-build script.
-
-	$ chmod +x basic-build.sh
-	$ ./basic-build.sh
+	$ ./build-spike-only.sh
 	
 
 ### <a name="full-toolchain-build-back"></a> Building `riscv64-unknown-linux-gnu-gcc` (11.41 SBU)
