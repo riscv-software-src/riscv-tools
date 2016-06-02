@@ -9,6 +9,6 @@ echo "Starting RISC-V Toolchain build process"
 
 build_project riscv-fesvr --prefix=$RISCV
 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV --with-isa=RV32IM
-build_project riscv-gnu-toolchain --prefix=$RISCV --with-xlen=32 --with-arch=IMA --disable-float
+build_project riscv-gnu-toolchain --prefix=$RISCV --with-arch=RV32IMA
 
 echo -e "\\nRISC-V Toolchain installation completed!"
