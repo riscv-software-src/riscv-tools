@@ -3,7 +3,7 @@
 
 JOBS=16
 
-if [ "x$RISCV" = "x" ]
+if [ -z "$RISCV" ]
 then
   echo "Please set the RISCV environment variable to your preferred install path."
   exit 1
