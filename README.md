@@ -206,12 +206,10 @@ environment variable now:
 
 	$ export PATH=$PATH:$RISCV/bin
 
-One more thing: If your machine doesn't have the capacity to
-handle 16 make jobs (or conversely, it can handle more), edit
-`build.common` to change the number specified by
-`JOBS`.
+If your machine doesn't have the capacity to handle 16 make jobs
+(or conversely, it can handle more), first do:
 
-	O$ sed -i 's/JOBS=16/JOBS=[number]/' build.common
+	$ export RISCV_TOOLS_JOBS=4
 
 With everything else set up, run the build script. Recall that if you're using a new-version of gcc that isn't the default on your system, you'll need to precede the `./build.sh` with `CC=gcc-4.8 CXX=g++-4.8`:
 
