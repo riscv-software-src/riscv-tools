@@ -1,0 +1,4 @@
+::sysinit:/bin/busybox mount -t proc proc /proc
+::sysinit:/bin/busybox mount -t tmpfs tmpfs /tmp
+::sysinit:/bin/busybox --install -s
+/dev/console::sysinit:-/bin/ash
