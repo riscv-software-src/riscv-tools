@@ -43,7 +43,7 @@ if [ -d "$BUSYBOX" ] && [ -d "$LINUX" ]; then
     if [ -z $? ]; then echo "build linux failed!"; fi &&
     \
     echo "build bbl..." &&
-    if ! [ -d $TOP/fpga/bootloader/build ]; then
+    if [ ! -d $TOP/fpga/bootloader/build ]; then
         make -p $TOP/fpga/bootloader/build
     fi   &&
     cd $TOP/fpga/bootloader/build &&
