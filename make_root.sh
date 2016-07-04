@@ -35,16 +35,16 @@ if [ -d "$BUSYBOX" ] && [ -d "$LINUX" ]; then
         mknod dev/console c 5 1 && \
         find . | cpio -H newc -o > "$LINUX"/initramfs.cpio\
         " | fakeroot &&
-    if [ -z $? ]; then echo "build busybox failed!"; fi &&
+    if [ $? -ne 0 ]; then echo "build busybox failed!"; fi &&
     \
     echo "build linux..." &&
     cp $LINUX_CFG "$LINUX"/.config &&
     make -j$(nproc) -C "$LINUX" ARCH=riscv vmlinux 2>&1 1>/dev/null &&
-    if [ -z $? ]; then echo "build linux failed!"; fi &&
+    if [ $? ]; then echo "build linux failed!"; fi &&
     \
     echo "build bbl..." &&
     if [ ! -d $TOP/fpga/bootloader/build ]; then
-        make -p $TOP/fpga/bootloader/build
+        mkdir -p $TOP/fpga/bootloader/build
     fi   &&
     cd $TOP/fpga/bootloader/build &&
     ../configure \
@@ -53,7 +53,7 @@ if [ -d "$BUSYBOX" ] && [ -d "$LINUX" ]; then
         --with-payload="$LINUX"/vmlinux \
         2>&1 1>/dev/null &&
     make -j$(nproc) bbl 2>&1 1>/dev/null &&
-    if [ -z $? ]; then echo "build linux failed!"; fi &&
+    if [ $? -ne 0 ]; then echo "build linux failed!"; fi &&
     \
     cd "$CDIR"
     cp $TOP/fpga/bootloader/build/bbl ./boot.bin
