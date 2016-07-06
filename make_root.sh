@@ -40,7 +40,7 @@ if [ -d "$BUSYBOX" ] && [ -d "$LINUX" ]; then
     echo "build linux..." &&
     cp $LINUX_CFG "$LINUX"/.config &&
     make -j$(nproc) -C "$LINUX" ARCH=riscv vmlinux 2>&1 1>/dev/null &&
-    if [ $? ]; then echo "build linux failed!"; fi &&
+    if [ $? -ne 0 ]; then echo "build linux failed!"; fi &&
     \
     echo "build bbl..." &&
     if [ ! -d $TOP/fpga/bootloader/build ]; then
