@@ -7,6 +7,16 @@ then
   exit 1
 fi
 
+XLEN=64
+while [[ "$1" != "" ]]
+do
+  case "$1" in
+  "--with-xlen=32") XLEN="32"; shift;;
+  "--with-xlen=64") XLEN="64"; shift;;
+  *) echo "Unknown argument $1"; exit 2;;
+  esac
+done
+
 # Use gmake instead of make if it exists.
 MAKE=`command -v gmake || command -v make`
 

@@ -29,6 +29,9 @@ env:
     - RISCV="/home/travis/riscv_install"
     - MAKEFLAGS="-j3"
     - PATH="/home/travis/riscv_install/bin:$PATH"
+  matrix:
+    - XLEN=32
+    - XLEN=64
 
 before_install:
   # make install destination
@@ -44,6 +47,6 @@ before_install:
 install: travis_wait
 
 script:
-  - ./build.sh
+  - ./build.sh --with-xlen=$XLEN
   #- cd riscv-tests/build
   #- make debug-check
