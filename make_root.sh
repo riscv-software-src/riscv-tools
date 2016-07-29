@@ -8,7 +8,7 @@ BUSYBOX_CFG=$TOP/riscv-tools/busybox_config
 
 ROOT_INITTAB=$TOP/riscv-tools/inittab
 
-if [ -z "$LINUX" ]; then LINUX=$TOP/riscv-tools/linux-4.1.25; fi
+if [ -z "$LINUX" ]; then LINUX=$TOP/riscv-tools/linux-4.6.2; fi
 LINUX_CFG=$TOP/riscv-tools/vmlinux_config
 
 # use nexys4 dev_map.h by default
