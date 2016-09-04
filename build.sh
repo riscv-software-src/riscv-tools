@@ -21,6 +21,6 @@ build_project riscv-fesvr --prefix=$RISCV
 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 build_project riscv-gnu-toolchain --prefix=$RISCV --with-xlen="$with_xlen"
 CC= CXX= build_project riscv-pk --prefix=$RISCV/riscv"$with_xlen"-unknown-elf --host=riscv"$with_xlen"-unknown-elf
-build_project riscv-tests --prefix=$RISCV/riscv"$with_xlen"-unknown-elf
+build_project riscv-tests --prefix=$RISCV/riscv"$with_xlen"-unknown-elf --with-xlen="$with_xlen"
 
 echo -e "\\nRISC-V Toolchain installation completed!"
