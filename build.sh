@@ -17,7 +17,7 @@ done
 
 echo "Starting RISC-V Toolchain build process"
 
-build_project riscv-fesvr --prefix=$RISCV
+CXXFLAGS="$CXXFLAGS -DTARGET_ARCH=\\\"riscv${with_xlen}-unknown-elf\\\"" build_project riscv-fesvr --prefix=$RISCV
 build_project riscv-isa-sim --prefix=$RISCV --with-fesvr=$RISCV
 build_project riscv-gnu-toolchain --prefix=$RISCV --with-xlen="$with_xlen"
 CC= CXX= build_project riscv-pk --prefix=$RISCV/riscv"$with_xlen"-unknown-elf --host=riscv"$with_xlen"-unknown-elf
