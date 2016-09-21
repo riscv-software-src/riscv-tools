@@ -42,4 +42,7 @@ before_install:
 # extra time duing long builds
 install: travis_wait
 
-script: ./build.sh
+script:
+  - ./build.sh
+  - cd riscv-tests/build
+  - make debug-check
