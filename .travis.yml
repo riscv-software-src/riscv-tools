@@ -22,6 +22,7 @@ addons:
       - bison
       - flex
       - texinfo
+      - python-pexpect
 
 env:
   global:
