@@ -22,11 +22,13 @@ addons:
       - bison
       - flex
       - texinfo
+      - python-pexpect
 
 env:
   global:
     - RISCV="/home/travis/riscv_install"
     - MAKEFLAGS="-j3"
+    - PATH="/home/travis/riscv_install/bin:$PATH"
 
 before_install:
   # make install destination
@@ -43,4 +45,7 @@ before_install:
 # extra time duing long builds
 install: travis_wait
 
-script: ./build.sh
+script:
+  - ./build.sh
+  - cd riscv-tests/build
+  - make debug-check
