@@ -409,13 +409,6 @@ environment variable now:
 
 	$ export PATH=$PATH:$RISCV/bin
 
-One more thing: If your machine doesn't have the capacity to
-handle 16 make jobs (or conversely, it can handle more), edit
-`build.common` to change the number specified by
-`JOBS`.
-
-	O$ sed -i 's/JOBS=16/JOBS=[number]/' build.common
-
 Since we only need to build a few tools, we will use a
 modified build script, listed in its entirety below. Remember that we'll build
 `riscv64-unknown-linux-gnu-gcc` shortly afterwards. If you want to build the full
