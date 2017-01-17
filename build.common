@@ -1,8 +1,6 @@
 # Script to build RISC-V ISA simulator, proxy kernel, and GNU toolchain.
 # Tools will be installed to $RISCV.
 
-JOBS=16
-
 if [ "x$RISCV" = "x" ]
 then
   echo "Please set the RISCV environment variable to your preferred install path."
@@ -18,19 +16,21 @@ PATH="$RISCV/bin:$PATH"
 set -e
 
 function build_project {
+  PROJECT="$1"
+  shift
   echo
-  if [ -e "$1/build" ]
+  if [ -e "$PROJECT/build" ]
   then
-    echo "Removing existing $1/build directory"
-    rm -rf $1/build
+    echo "Removing existing $PROJECT/build directory"
+    rm -rf "$PROJECT/build"
   fi
-  mkdir -p $1/build
-  cd $1/build
-  echo "Configuring project $1"
-  ../configure $2 $3 $4 $5 $6 > build.log
-  echo "Building project $1"
-  $MAKE -j$JOBS >> build.log
-  echo "Installing project $1"
-  $MAKE -j$JOBS install >> build.log
+  mkdir -p "$PROJECT/build"
+  cd "$PROJECT/build"
+  echo "Configuring project $PROJECT"
+  ../configure $* > build.log
+  echo "Building project $PROJECT"
+  $MAKE >> build.log
+  echo "Installing project $PROJECT"
+  $MAKE install >> build.log
   cd - > /dev/null
 }

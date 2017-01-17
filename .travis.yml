@@ -27,6 +27,7 @@ addons:
 env:
   global:
     - RISCV="/home/travis/riscv_install"
+    - MAKEFLAGS="-j3"
     - PATH="/home/travis/riscv_install/bin:$PATH"
 
 before_install:
@@ -38,8 +39,6 @@ before_install:
   - cd ..
   # actually use new gcc
   - export CXX=g++-4.8 CC=gcc-4.8
-  # only have 2 cores on the travis machine
-  - sed -i.bak 's/JOBS=16/JOBS=8/' build.common
 
 # extra time duing long builds
 install: travis_wait
