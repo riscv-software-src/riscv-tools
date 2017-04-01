@@ -45,5 +45,5 @@ install: travis_wait
 
 script:
   - ./build.sh
-  - cd riscv-tests/build
-  - make debug-check
+  #- cd riscv-tests/build
+  #- make debug-check
