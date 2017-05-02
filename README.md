@@ -30,13 +30,13 @@ To use a compiler different than the default, use:
 
 	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
-_Note for OS X:_ We recommend using [Homebrew](http://brew.sh) to install the dependencies (`gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
+_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
 
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
-This document was authored by [Quan Nguyen](http://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
-website](http://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
+This document was authored by [Quan Nguyen](https://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
+website](https://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
 
 Last updated August 6, 2014
 
@@ -158,7 +158,7 @@ system calls.
 
 ### What's Newlib?
 
-[Newlib](http://www.sourceware.org/newlib/) is a
+[Newlib](https://www.sourceware.org/newlib/) is a
 "C library intended for use on embedded systems." It has the advantage of not
 having so much cruft as Glibc at the obvious cost of incomplete support (and
 idiosyncratic behavior) in the fringes. The porting process is much less complex
@@ -271,7 +271,7 @@ guaranteed.
 This document is a mirrored version (with slight
 modifications) of the one found at 
 [Quan's OCF
-website](http://ocf.berkeley.edu/~qmn/linux/install.html)
+website](https://ocf.berkeley.edu/~qmn/linux/install.html)
 
 ## Table of Contents
 
@@ -512,7 +512,7 @@ it.
 We currently develop with BusyBox,
 an unbelievably useful set of utilities that all compile into one multi-use
 binary. We use BusyBox without source code modifications. You can obtain
-the source at <a href="http://www.busybox.net">http://www.busybox.net</a>. In
+the source at <a href="https://www.busybox.net">https://www.busybox.net</a>. In
 our case, we will use BusyBox 1.21.1, but other versions should work fine.
 
 Currently, we need it for its `init` and
@@ -522,7 +522,7 @@ there is no longer a need for `ash`.
 First, obtain and untar the source:
 
 	$ cd $TOP
-	$ curl -L http://busybox.net/downloads/busybox-1.21.1.tar.bz2 | tar -xj
+	$ curl -L https://busybox.net/downloads/busybox-1.21.1.tar.bz2 | tar -xj
 
 Then, enter the directory and turn off every configuration
 option:
@@ -582,7 +582,7 @@ back into the directory with the Linux sources.
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
 
 When we initially developed the kernel, we used an initramfs
-to store our binaries ([BusyBox](http://www.busybox.net) in
+to store our binaries ([BusyBox](https://www.busybox.net) in
 particular). However, with our HTIF-enabled block device, we can boot off of a
 root file system proper. (In fact, we still make use of the initramfs, but only
 to set up devices and the symlink to `init`. See
@@ -590,7 +590,7 @@ to set up devices and the symlink to `init`. See
 
 Currently, we have a root file system pre-packaged
 specifically for the RISC-V release. You can obtain it by heading to the index
-of my website, [http://ocf.berkeley.edu/~qmn](http://ocf.berkeley.edu/~qmn), finding my
+of my website, [https://ocf.berkeley.edu/~qmn](https://ocf.berkeley.edu/~qmn), finding my
 email, and contacting me.
 
 To create your own root image, we need to create an ext2 disk
@@ -693,7 +693,7 @@ and then unmount the disk image.<p>
 
 Now, we're ready to boot a most basic kernel, with a shell.
 Invoke `spike`, the RISC-V architectural simulator, named after the
-[golden spike](http://www.nps.gov/gosp/index.htm) that joined the two
+[golden spike](https://www.nps.gov/gosp/index.htm) that joined the two
 tracks of the Transcontinental Railroad, and considered to be the golden model of
 execution. We will need to load in the root disk image through the
 `+disk` argument to `spike` as well. The command looks
@@ -834,7 +834,7 @@ Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
 ## <a name="references"></a> References
 
-* Waterman, A., Lee, Y., Patterson, D., and Asanovic, K,. "The RISC-V Instruction Set Manual," vol. II, [http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
+* Waterman, A., Lee, Y., Patterson, D., and Asanovic, K,. "The RISC-V Instruction Set Manual," vol. II, [https://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](https://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
 
 * Bovet, D.P., and Cesati, M. _Understanding the Linux Kernel_, 3rd ed., O'Reilly, 2006.
 
