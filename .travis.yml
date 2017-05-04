@@ -23,6 +23,7 @@ addons:
       - flex
       - texinfo
       - python-pexpect
+      - libusb-1.0-0-dev
 
 env:
   global:
@@ -35,6 +36,10 @@ before_install:
   - mkdir -p $RISCV
   # don't forget to clone riscv-tests/env
   - cd riscv-tests
+  - git submodule update --init
+  - cd ..
+  # openocd also needs submodules
+  - cd riscv-openocd
   - git submodule update --init
   - cd ..
   # actually use new gcc
