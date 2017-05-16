@@ -24,6 +24,7 @@ addons:
       - texinfo
       - python-pexpect
       - libusb-1.0-0-dev
+      - device-tree-compiler
 
 env:
   global:
@@ -50,5 +51,5 @@ install: travis_wait
 
 script:
   - ./build.sh
-  #- cd riscv-tests/build
-  #- make debug-check
+  - cd riscv-tests/build
+  - make debug-check || (tail debug/*.log; exit 1)
