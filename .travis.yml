@@ -29,7 +29,7 @@ addons:
 env:
   global:
     - RISCV="/home/travis/riscv_install"
-    - MAKEFLAGS="-j3"
+    - MAKEFLAGS="-j2"
     - PATH="/home/travis/riscv_install/bin:$PATH"
 
 before_install:
