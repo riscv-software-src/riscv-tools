@@ -22,7 +22,7 @@ This repo provides guides and references:
 
 Ubuntu packages needed:
 
-	$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev
+	$ sudo apt-get install autoconf automake autotools-dev curl device-tree-compiler libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev
 
 
 _Note:_ This requires a compiler with C++11 support (e.g. GCC >= 4.8).
@@ -30,8 +30,7 @@ To use a compiler different than the default, use:
 
 	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
-_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
-
+_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`dtc gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
@@ -191,7 +190,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc
+	O$ sudo apt-get install autoconf automake autotools-dev curl device-tree-compiler libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
@@ -424,7 +423,7 @@ flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
 installations will require this command to be run. If you have not installed
 these things yet, then run this:
 
-	O$ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
+	O$ sudo apt-get install autoconf automake autotools-dev curl device-tree-compiler libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf
 
 Before we start installation, we need to set the
 `$RISCV` environment variable. The variable is used throughout the
