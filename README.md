@@ -30,13 +30,12 @@ To use a compiler different than the default, use:
 
 	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
-_Note for OS X:_ We recommend using [Homebrew](http://brew.sh) to install the dependencies (`dtc gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
-
+_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`dtc gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
-This document was authored by [Quan Nguyen](http://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
-website](http://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
+This document was authored by [Quan Nguyen](https://ocf.berkeley.edu/~qmn) and is a mirrored version (with slight modifications) of the one found at [Quan's OCF
+website](https://ocf.berkeley.edu/~qmn/linux/install-newlib.html). Recent updates were made by Sagar Karandikar.
 
 Last updated August 6, 2014
 
@@ -158,7 +157,7 @@ system calls.
 
 ### What's Newlib?
 
-[Newlib](http://www.sourceware.org/newlib/) is a
+[Newlib](https://www.sourceware.org/newlib/) is a
 "C library intended for use on embedded systems." It has the advantage of not
 having so much cruft as Glibc at the obvious cost of incomplete support (and
 idiosyncratic behavior) in the fringes. The porting process is much less complex
@@ -250,9 +249,39 @@ saying, "Hello world!". If not...
 
 ## <a name="help-it-doesnt-work"></a>"Help! It doesn't work!"
 
-I know, I've been there too. Good luck!
+Most of the errors below were seen when trying to build riscv-tools on CentOS linux distribution with nfs file-system.
+
+### <a name="c++11-problem"></a>C++11 is not supported, although gcc is updated
+This problem occured due to old OS installation repository.
+A possible solution for CentOS distribution:
+
+	wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+	sudo yum upgrade
+	sudo yum install devtoolset-2-gcc devtoolset-2-binutils devtoolset-2-gcc-c++
+	scl enable devtoolset-2 bash
+
+Last operation will open a shell. Try to run .build.sh from within this shell.
+
+### “error: Building GCC requires GMP 4.2+, MPFR 2.4.0+ and MPC 0.8.0+”
+Try the following:
+
+	cd <riscv-tools>/riscv-gnu-toolchain/riscv-gcc
+	contrib/download_prerequisites
+    sudo yum install gmp gmp-devel mpfr mpfr-devel libmpc libmpc-devel
+
+Also try to follow the instructions of [C++11 is not supported](#c++11-problem).
+
+### Build script got stuck on "Installing project riscv-fesvr"
+That's a very simple problem of output redirection. The solution is to open the <riscv-tools>/build.common file and change the following line:
 
 
+    $MAKE install >> build.log
+
+to:
+
+    $MAKE install | tee install.log
+
+Then when you run the build script, you will see requests to press y to continue which were hidden before. Just follow the instructions.
 
 
 # <a name="linuxman"></a> The Linux/RISC-V Installation Manual
@@ -271,7 +300,7 @@ guaranteed.
 This document is a mirrored version (with slight
 modifications) of the one found at 
 [Quan's OCF
-website](http://ocf.berkeley.edu/~qmn/linux/install.html)
+website](https://ocf.berkeley.edu/~qmn/linux/install.html)
 
 ## Table of Contents
 
@@ -387,7 +416,7 @@ of resolving the references. Enter the newly-created riscv-tools directory and
 instruct Git to update its submodules. 
 
 	$ cd $TOP/riscv-tools
-	$ git submodule update --init
+	$ git submodule update --init --recursive
 
 To build GCC, we will need several other packages, including
 flex, bison, autotools, libmpc, libmpfr, and libgmp. Ubuntu distribution
@@ -512,8 +541,8 @@ it.
 We currently develop with BusyBox,
 an unbelievably useful set of utilities that all compile into one multi-use
 binary. We use BusyBox without source code modifications. You can obtain
-the source at <a href="http://www.busybox.net">http://www.busybox.net</a>. In
-our case, we will use BusyBox 1.21.1, but other versions should work fine.
+the source at <a href="https://www.busybox.net">https://www.busybox.net</a>. In
+our case, we will use BusyBox 1.26.2, but other versions should work fine.
 
 Currently, we need it for its `init` and
 `ash` applets, but with `bash` cross-compiled for RISC-V,
@@ -521,13 +550,13 @@ there is no longer a need for `ash`.
 
 First, obtain and untar the source:
 
-	$ cd $TOP
-	$ curl -L http://busybox.net/downloads/busybox-1.21.1.tar.bz2 | tar -xj
+    $ curl -L http://busybox.net/downloads/busybox-1.26.2.tar.bz2 > busybox-1.26.2.tar.bz2
+    $ tar xvjf busybox-1.26.2.tar.bz2
 
 Then, enter the directory and turn off every configuration
 option:
 
-	$ cd busybox-1.21.1
+	$ cd busybox-1.26.2
 	$ make allnoconfig
 
 We will need to change the cross-compiler, set the build to
@@ -541,7 +570,7 @@ Here are the configurations you will have to change:
 *   `CONFIG_STATIC=y`, listed as "Build
 BusyBox as a static binary (no shared libs)" in BusyBox Settings
 &rarr; Build Options
-*   `CONFIG_CROSS_COMPILER_PREFIX=riscv-linux-`,
+*   `CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-`,
 listed as "Cross Compiler prefix" in BusyBox Settings &rarr; Build Options
 *   `CONFIG_FEATURE_INSTALLER=y`, listed as
 "Support --install [-s] to install applet links at runtime" in BusyBox Settings
@@ -551,14 +580,7 @@ listed as "Cross Compiler prefix" in BusyBox Settings &rarr; Build Options
 *   `CONFIG_ASH_JOB_CONTROL=n`, listed as "Ash &rarr; Job control" in Shells
 *   `CONFIG_MOUNT=y`, listed as "mount" in Linux System Utilities
 
-My configuration file used to create this example is located
-here: [busybox-riscv.config](busybox-riscv.config). You
-can also download it directly using this snippet of code:
-
-	$ curl -L http://riscv.org/install-guides/busybox-riscv.config > .config
-
-Whether or not you want to use the file provided, enter the
-configuration interface much in the same way as that of the Linux kernel:
+Enter the configuration interface much in the same way as that of the Linux kernel:
 
 	O$ make menuconfig
 
@@ -581,49 +603,15 @@ back into the directory with the Linux sources.
 
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
 
-When we initially developed the kernel, we used an initramfs
-to store our binaries ([BusyBox](http://www.busybox.net) in
-particular). However, with our HTIF-enabled block device, we can boot off of a
-root file system proper. (In fact, we still make use of the initramfs, but only
-to set up devices and the symlink to `init`. See
-`arch/riscv/initramfs.txt`.)
+We use an initramfs to store our binaries ([BusyBox](https://www.busybox.net) in
+particular).
 
 Currently, we have a root file system pre-packaged
 specifically for the RISC-V release. You can obtain it by heading to the index
-of my website, [http://ocf.berkeley.edu/~qmn](http://ocf.berkeley.edu/~qmn), finding my
+of my website, [https://ocf.berkeley.edu/~qmn](https://ocf.berkeley.edu/~qmn), finding my
 email, and contacting me.
 
-To create your own root image, we need to create an ext2 disk
-image. To create an empty disk image, use `dd`, setting the argument
-to `count` to the size, in MiB, of your disk image. 64 MiB seems to
-be good enough for our purposes.
-
-	$ dd if=/dev/zero of=root.bin bs=1M count=64
-
-The file `root.bin` is just an empty chunk of
-zeros and has no partitioning information. To format it as an ext2 disk, run
-`mkfs.ext2` on it:
-
-	$ mkfs.ext2 -F root.bin
-
-You can modify this filesystem if you mount it as writable
-from within Linux/RISC-V. However, a better option, especially if you want to
-copy big binaries, is to mount it on your host machine. _You will normally
-need superuser privileges to do a mount._ Do so this way, assuming you want
-to mount the disk image at `linux-3.14.33/mnt`:
-
-	$ mkdir mnt
-	$ sudo mount -o loop root.bin mnt
-
-(Instructions for mounting provided courtesy of a_ou.)
-
-If you cannot mount as root, you can use Filesystem in Userspace
-(FUSE) instead. See [here](#using-fuse).
-
-<a name="using-fuse-back"></a>
-
-Once you've mounted the disk image, you can edit the files 
-inside. There are a few directories that you should have:
+To create your own initramfs, there are a few directories that you should have:
 
 *   `/bin`
 *   `/dev`
@@ -636,13 +624,14 @@ inside. There are a few directories that you should have:
 
 So create them:
 
-	$ cd mnt
+	$ mkdir root
+	$ cd root
 	$ mkdir -p bin etc dev lib proc sbin sys tmp usr usr/bin usr/lib usr/sbin
 
 Then, place the BusyBox executable we just compiled in
 `/bin`.
 
-	$ cp $TOP/busybox-1.21.1/busybox bin
+	$ cp $TOP/busybox-1.26.2/busybox bin
 
 If you have built BusyBox  statically, that will be all
 that's needed. If you want to build BusyBox dynamically, you will need to follow
@@ -684,22 +673,41 @@ comment out line 4.
 Also, we will need to create a symbolic link to `/bin/busybox` for `init` to work.
 
 	$ ln -s ../bin/busybox sbin/init
+	$ ln -s sbin/init init
 
-Add your final touches and binaries to your root disk image,
-and then unmount the disk image.<p>
+We'll also need a character device for the console:
 
-	$ cd ..
-	$ sudo umount mnt
+    sudo mknod dev/console c 5 1
+
+We are ready to create our initramfs:
+
+    find . | cpio --quiet -o -H newc > <riscv-linux>/rootfs.cpio
+
+Configure linux to embed the created cpio archive. In the riscv-linux folder type
+
+    make ARCH=riscv menuconfig
+
+Enter to General Setup, mark "Initial RAM filesystem and RAM disk". Then go to the option "Initramfs source file" and press enter to change it to "rootfs.cpio". Then Exit all the way back and save to .config.
+
+Don't forget to rebuild riscv-linux and riscv-pk!
+
+    cd <riscv-linux>
+	make -j4 ARCH=riscv vmlinux
+    cd <riscv-pk>/build
+	rm -rf *
+	../configure --prefix=$RISCV --host=riscv64-unknown-linux-gnu --with-payload=<riscv-linux>/vmlinux
+	make
+	make install
+	
 
 Now, we're ready to boot a most basic kernel, with a shell.
 Invoke `spike`, the RISC-V architectural simulator, named after the
-[golden spike](http://www.nps.gov/gosp/index.htm) that joined the two
+[golden spike](https://www.nps.gov/gosp/index.htm) that joined the two
 tracks of the Transcontinental Railroad, and considered to be the golden model of
-execution. We will need to load in the root disk image through the
-`+disk` argument to `spike` as well. The command looks
+execution. The command looks
 like this:
 
-	$ spike +disk=root.bin bbl vmlinux
+	$ spike bbl vmlinux
 
 `vmlinux` is the name of the compiled Linux kernel binary.
 
@@ -722,7 +730,91 @@ symbolic links to BusyBox applets. Otherwise, it will generate several
 
 ## <a name="help-it-doesnt-work-linux"></a> "Help! It doesn't work!"
 
-I know, I've been there too. Good luck!		
+First take a look at the [Newlib problem list](#help-it-doesnt-work) which are also relevant to here.
+Here are some more problems that can occur in the linux build:
+
+### Problems with "flock"
+
+Some filesystems don't support flock, e.g. nfs (you can check your filesystem by `df -Th`). Look for
+"+flock $(SYSROOT)/.lock" in the following files and delete them:
+
+    riscv-tools/riscv-gnu-toolchain/Makefile
+    riscv-tools/riscv-gnu-toolchain/Makefile.in
+    riscv-tools/riscv-gnu-toolchain/build/Makefile
+
+Avoid building with concurrency (i.e. avoid running make with the -j flag).
+
+### "These critical programs are missing or too old: make"
+
+Not sure why, but gmake doesn't work well for the riscv-tools build in some platforms.
+In order to use make instead of gmake, open the file `<riscv-tools>/riscv-gnu-toolchain/riscv-glibc/configure`
+and replace the following line:
+
+    for ac_prog in gnumake gmake make
+
+with:
+
+    for ac_prog in gnumake make gmake
+
+
+### "Operation not permitted" when trying to create character device
+
+This may occur when running the following command:
+
+    sudo mknod dev/console c 5 1
+
+Even if you have sudo permissions, you may still see this message in some filesystem (e.g. nfs). You can create
+a virtual drive by:
+
+    dd if=/dev/zero of=root.bin bs=1M count=64
+    mkfs.ext2 -F root.bin
+	chmod 777 root.bin
+	mkdir mnt
+	sudo mount -o loop root.bin mnt
+
+If the `mkfs.ext2` command not found, try instead:
+
+    /sbin/mkfs.ext2 -F root.bin
+
+Copy the contents in the above created root directory into the new mnt directory and continue to create the cpio
+archive with the mnt directory instead of the root directory.
+
+When finished, you may unmount by:
+
+    cd ..
+	sudo umount root.bin
+
+### compiler-gcc6.h not found
+
+Use newer linux version for RISC-V. You can find it in https://github.com/riscv/riscv-linux
+Notice that similar problems as detailed here may occur, so don't forget to check this problem list in case of problems.
+
+
+### Error on build about "mcmodel=medany"
+
+Such error may occur in one of the stages that requires the RISC-V gcc compiler. Some build stages use the default
+x86 gcc compiler installed on the x86 machine to compile if the RISC-V gcc not found. Some possible cases for that:
+
+* RISC-V compiler is not built.
+* $RISCV/bin is not in $PATH (Use "setenv PATH $RISCV/bin" or similar export command to add it to path).
+* RISC-V compiler has been built but for the wrong variant (built for newlib and not for linux, 32/64 bit variant issue...).
+* gcc path is wrong. For example, if "CONFIG_CROSS_COMPILER_PREFIX=riscv-linux-" is used in the Busybox build configuration
+instead of "CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-" but the RISC-V compiler is built into
+riscv64-unknown-linux-gnu-gcc, the busybox configurator will not find the correct gcc and will use the x86 as default.
+Similar problem may occur when compiling https://github.com/riscv/riscv-pk with a wrong --host argument.
+
+
+### Spike exits immediately with "This is bbl's dummy_payload" message
+
+https://github.com/riscv/riscv-pk should be rebuilt with --with-payload flag points to the compiled vmlinux (replace the
+riscv-pk and riscv-linux below with the appropriate repository paths):
+
+    cd <riscv-pk>/build
+	rm -rf *
+	../configure --prefix=$RISCV --host=riscv64-unknown-linux-gnu --with-payload=<riscv-linux>/vmlinux
+	make
+	make install
+
 
 ## <a name="optional-commands"></a> Optional Commands
 
@@ -821,20 +913,20 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
  To make things a little faster, I've used a bit of 
 `sed` magic instead.
 
-	O$ cd $TOP/busybox-1.21.1
+	O$ cd $TOP/busybox-1.26.2
 	O$ sed -i 's/CONFIG_STATIC=y/# CONFIG_STATIC is not set/' .config
 
 Then, rebuild and reinstall BusyBox into `mnt/bin`.
 
 	O$ make -j16
 	O$ cd $TOP/linux-3.14.33/mnt
-	O$ cp $TOP/busybox-1.21.1/busybox bin
+	O$ cp $TOP/busybox-1.26.2/busybox bin
 
 [Return to text.](#dynamic-busybox-back)
 
 ## <a name="references"></a> References
 
-* Waterman, A., Lee, Y., Patterson, D., and Asanovic, K,. "The RISC-V Instruction Set Manual," vol. II, [http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](http://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
+* Waterman, A., Lee, Y., Patterson, D., and Asanovic, K,. "The RISC-V Instruction Set Manual," vol. II, [https://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf](https://inst.eecs.berkeley.edu/~cs152/sp12/handouts/riscv-supervisor.pdf), 2012.
 
 * Bovet, D.P., and Cesati, M. _Understanding the Linux Kernel_, 3rd ed., O'Reilly, 2006.
 
