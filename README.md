@@ -25,6 +25,10 @@ Ubuntu packages needed:
 	$ sudo apt-get install autoconf automake autotools-dev curl device-tree-compiler libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev
 
 
+Fedora packages needed:
+
+	$ sudo dnf install autoconf automake @development-tools curl dtc libmpc-devel mpfr-devel gmp-devel gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib-devel
+
 _Note:_ This requires a compiler with C++11 support (e.g. GCC >= 4.8).
 To use a compiler different than the default, use:
 
