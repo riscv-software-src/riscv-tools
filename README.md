@@ -583,6 +583,8 @@ listed as "Cross Compiler prefix" in BusyBox Settings &rarr; Build Options
 *   `CONFIG_ASH=y`, listed as "ash" in Shells
 *   `CONFIG_ASH_JOB_CONTROL=n`, listed as "Ash &rarr; Job control" in Shells
 *   `CONFIG_MOUNT=y`, listed as "mount" in Linux System Utilities
+*   `CONFIG_FEATURE_USE_INITTAB=y`, listed as "Support reading an inittab file" in Init Utilities
+
 
 Enter the configuration interface much in the same way as that of the Linux kernel:
 
