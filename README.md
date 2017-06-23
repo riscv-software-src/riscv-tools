@@ -34,7 +34,7 @@ To use a compiler different than the default, use:
 
 	$ CC=gcc-5 CXX=g++-5 ./build.sh
 
-_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`dtc gawk gnu-sed gmp mpfr libmpc isl wget`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
+_Note for OS X:_ We recommend using [Homebrew](https://brew.sh) to install the dependencies (`dtc gawk gnu-sed gmp mpfr libmpc isl wget automake md5sha1sum`) or even to install the tools [directly](https://github.com/riscv/homebrew-riscv). This repo will build with Apple's command-line developer tools (clang) in addition to gcc.
 
 # <a name="newlibman"></a>The RISC-V GCC/Newlib Toolchain Installation Manual
 
