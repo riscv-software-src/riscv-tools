@@ -3,7 +3,6 @@
 :toclevels: 1
 
 
-
 The RISC-V toolchain is a set of tools for developing software on the
 https://riscv.org[RISC-V] instruction set architecture; it consists of
 the following components:
@@ -28,7 +27,11 @@ https://github.com/riscv/riscv-pk[riscv-pk]::
 https://github.com/riscv/riscv-tests[riscv-tests]::
     a set of assembly tests and benchmarks
 
-This repo provides two options: one installs the all of the `riscv-tools`
+'''
+
+toc::[]
+
+This repo provides two guides: one installs the all of the `riscv-tools`
 with the <<what_s_newlib,Newlib>> library using a proxy kernel
 (`riscv-pk`) and the other installs only a subset of the `riscv-tools`
 with Glibc using the Linux kernel.
@@ -37,7 +40,6 @@ Both options share a common setup but diverge around the time the
 `build.sh` script is executed; simply follow this guide from the start
 and we will let you know what to do based on the path you've chosen.
 
-toc::[]
 
 == Quickstart
 
@@ -133,7 +135,7 @@ to install the various `riscv-tools`.
 
     $ export RISCV=$TOP/riscv
 
-If the `RISCV` binary subdirectory is not already in your `PATH`
+If this does not place the `RISCV` bin subdirectory in your `PATH`
 environment variable, add it now:
 
     $ export PATH=$PATH:$RISCV/bin
@@ -141,8 +143,8 @@ environment variable, add it now:
 == pk/Newlib Installation
 
 NOTE: Follow the instructions in this section only if you want to use
-Newlib and the proxy kernel; otherwise, skip down to the next section
-where we use Glibc with the Linux kernel.
+Newlib and the proxy kernel; otherwise, skip down to the <<Linux/Glibc
+Installation>> section.
 
 With everything else set up, run the `build.sh` script:
 
@@ -151,16 +153,16 @@ With everything else set up, run the `build.sh` script:
 === Testing Your Toolchain
 
 Now that you have a toolchain, it'd be a good idea to test it on the
-quintessential "Hello world!" program. I'll use a long-winded `echo`
+quintessential "Hello world!" program. Let's use a long-winded `echo`
 command.
 
     $ echo -e '#include <stdio.h>\n int main(void) { printf("Hello world!\\n"); return 0; }' > hello.c
 
-Then, build your program with `riscv64-unknown-elf-gcc`.
+Then, build your program with the `riscv64-unknown-elf-gcc` compiler.
 
     $ riscv64-unknown-elf-gcc -o hello hello.c
 
-When you're done, you may want to do `./hello` --- but not so fast. We
+When you're done, you may want to do `./hello` -- but not so fast. We
 can't even run `spike hello`, because our "Hello world!" program
 involves a system call which couldn't be handled by our host x86 system.
 We'll have to run the program within the proxy kernel, which itself is
@@ -254,7 +256,7 @@ hacking" submenu.
 Once you're satisfied with your configuration, begin building the
 kernel.
 
-NOTE: to build the RISC-V kernel, you _must_ set the `ARCH` variable
+WARNING: to build the RISC-V kernel, you _must_ set the `ARCH` variable
 to `riscv` in each invocation of `make`.
 
 If you want to speed up the process, you can pass the `-j[number]`
@@ -284,8 +286,7 @@ Then, enter the directory and turn off every configuration option:
 Now, we will need to change the cross-compiler and set the build to
 "static" (if desired, you can make it dynamic, but you'll have to copy
 some libraries later). We will also enable the `init`, `ash`, and
-`mount` applets. Also, disable job control for `ash` when the drop down
-menu for `ash`'s suboptions appear.
+`mount` applets.
 
 Enter the configuration interface,
 
@@ -312,8 +313,8 @@ and change the following options:
 
 Once you've finished, compile BusyBox.
 
-TIP: You don't need to specify `ARCH`, because we've passed the name of the
-cross-compiler prefix.
+TIP: You don't need to specify `ARCH` here, because we've passed the
+name of the cross-compiler prefix.
 
     $ make -j16
 
@@ -322,7 +323,7 @@ on RISC-V. Now we'll need a way for the kernel to access the binary, and
 we'll use a root disk image for that. Before we proceed, change back
 into the directory with the Linux sources.
 
-    $ cd $TOP/linux-3.14.33
+    $ cd $TOP/riscv-linux
 
 === Creating a Root Disk Image
 
@@ -331,29 +332,19 @@ We use an initramfs to store our binaries (like BusyBox, for example).
 To create an initramfs, there are a few directories that you should
 have:
 
-* `/bin`
-* `/dev`
-* `/etc`
-* `/lib`
-* `/proc`
-* `/sbin`
-* `/tmp`
-* `/usr`
-
-So create them:
-
     $ mkdir root
     $ cd root
     $ mkdir -p bin etc dev lib proc sbin sys tmp usr/{bin,lib,sbin}
 
-Then, place the BusyBox executable we just compiled in `root/bin`.
+Then, place the BusyBox executable we just compiled in our new `bin`
+directory.
 
     $ cp $TOP/busybox-1.26.2/busybox bin
 
-If you have built BusyBox statically, that will be all that's needed. If
-you want to build BusyBox dynamically, you will need to follow a
-slightly different procedure, described in the Optional Commands section
-below.
+NOTE: If you have built BusyBox statically, that will be all that's
+needed. If you want to build BusyBox dynamically, you will need to follow
+a slightly different procedure, described in the <<Optional Commands>>
+section below.
 
 We will also need to prepare an initialization table in the aptly-named
 file `inittab`, placed in `root/etc`.
@@ -375,13 +366,12 @@ mapped to `ttyHTIF`) for a connection.
 
 If you would like to use `getty` instead, change line 5:
 
-    $ head -n5 etc/inittab
     ::respawn:/bin/busybox getty 38400 ttyHTIF0
 
-Once you've booted Linux and created the symlinks with line 4, they will
-persist between boots of the Linux kernel. This will cause a bunch of
-unsightly errors in every subsequent boot of the kernel. At the next
-boot, comment out line 4.
+TIP: Once you've booted Linux and created the symlinks (with line 4),
+they will persist between boots of the Linux kernel. This will cause a
+bunch of unsightly errors in every subsequent boot of the kernel to get
+rid of them, comment out line 4.
 
 Also, we will need to create a symbolic link to `bin/busybox` for `init`
 to work.
@@ -395,7 +385,7 @@ We'll also need a character device for the console:
 
 We are ready to create our initramfs:
 
-    $ find . | cpio --quiet -o -H newc > <riscv-linux>/rootfs.cpio
+    $ find . | cpio --quiet -o -H newc > $TOP/riscv-linux/rootfs.cpio
 
 Configure linux to embed the created cpio archive:
 
@@ -412,7 +402,7 @@ Don't forget to rebuild `riscv-linux` and `riscv-pk`!
     $ make -j4 ARCH=riscv vmlinux
     $ cd $TOP/riscv-tools/riscv-pk/build
     $ rm -rf *
-    $ ../configure --prefix=$RISCV --host=riscv64-unknown-linux-gnu --with-payload=<riscv-linux>/vmlinux
+    $ ../configure --prefix=$RISCV --host=riscv64-unknown-linux-gnu --with-payload=$TOP/riscv-linux/vmlinux
     $ make
     $ make install
 
@@ -429,10 +419,6 @@ fun!
 
 To exit the simulator, hit `Ctrl-C`.
 
-NOTE: If you want to reuse your disk image in a subsequent boot of the
-kernel, remember to remove (or comment out) the line that creates the
-symbolic links to BusyBox applets. Otherwise, it will generate several
-(harmless) warnings in each subsequent boot.
 
 == Optional Commands
 
