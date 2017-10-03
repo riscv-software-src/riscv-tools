@@ -75,6 +75,7 @@ function build_project {
   fi
   mkdir -p "$PROJECT/build"
   cd "$PROJECT/build"
+  echo `git rev-parse HEAD` > build.version
   echo "Configuring project $PROJECT"
   ../configure $* > build.log
   echo "Building project $PROJECT"
