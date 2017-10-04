@@ -8,7 +8,7 @@ usage () {
     echo "usage: $0 [<tool> --<flag> --<flag> ...] [<tool>] ..."
     echo
     echo "where <tool> can be any one of:"
-    echo "    openocd fesvr isa-sim gnu-toolchain pk tests"
+    echo "    openocd fesvr isa_sim gnu_toolchain pk tests"
     echo "and the --reset flag"
     echo "    clears all flags of the preceeding tool (except --prefix)"
     echo
@@ -19,8 +19,8 @@ usage () {
     echo
     echo "riscv-openocd$openocdflags"
     echo "riscv-fesvr$fesvrflags"
-    echo "riscv-isa-sim$isaflags"
-    echo "riscv-gnu-toolchain$gnuflags"
+    echo "riscv-isa-sim$isa_simflags"
+    echo "riscv-gnu-toolchain$gnu_toolchainflags"
     echo "riscv-pk$pkflags"
     echo "riscv-tests$testsflags"
     echo
@@ -34,12 +34,12 @@ if [ $# -eq 0 ]; then
 fi
 
 # default flags
-openocdflags=" --enable-remote-bitbang --enable-jtag_vpi --disable-werror"
-fesvrflags=" "
-isaflags=" --with-fesvr=$RISCV"
-gnuflags=" "
-pkflags=" --host=riscv64-unknown-elf"
-testsflags=" "
+      openocdflags=" --enable-remote-bitbang --enable-jtag_vpi --disable-werror"
+        fesvrflags=" "
+      isa_simflags=" --with-fesvr=$RISCV"
+gnu_toolchainflags=" "
+           pkflags=" --host=riscv64-unknown-elf"
+        testsflags=" "
 
 appendarg () {
     eval new="\$$1"
@@ -55,13 +55,14 @@ appendarg () {
 
 while test $# -gt 0; do
     case "$1" in
+        all)           all=true ;;
         openocd)       openocd=true
                        lastarg="$1" ;;
         fesvr)         fesvr=true
                        lastarg="$1" ;;
-        isa-sim)       isa=true
+        isa_sim)       isa_sim=true
                        lastarg="$1" ;;
-        gnu-toolchain) gnu=true
+        gnu_toolchain) gnu_toolchain=true
                        lastarg="$1" ;;
         pk)            pk=true
                        lastarg="$1" ;;
@@ -69,13 +70,13 @@ while test $# -gt 0; do
                        lastarg="$1" ;;
         rv32ima)       rv32ima=true
                        lastarg="$1" ;;
-        --*)
+        -h)
+            usage ;;
+        -*)
             appendarg "${lastarg}flags" "$1"
             if [ $rv32ima ]; then
-            usage
+                usage
             fi ;;
-        -h) 
-            usage ;;
         *)  
             echo "error: unrecognized parameter: $1"
             usage ;;
@@ -83,16 +84,20 @@ while test $# -gt 0; do
     shift
 done
 
-if [ $rv32ima ] && [ $all ] || [ $opencd ] || [ $fesvr ] || [ $isa ] || [ $gnu ] || [ $pk ] || [ $tests ]; then
+if [ $all ] || [ $openocd ] || [ $fesvr ] || [ $isa_sim ] || [ $gnu_toolchain ] || [ $pk ] || [ $tests ]; then
+     others=true
+fi
+
+if [ $rv32ima ] && [ $others ]; then
    echo "error: rv32ima cannot be used with any other option"
    usage
 fi
 
 if [ $rv32ima ]; then
-    openocdflags=" --enable-remote-bitbang --disable-werror"
-    isaflags=" --with-fesvr=$RISCV --with-isa=rv32ima"
-    gnuflags=" --with-arch=rv32ima --with-abi=ilp32"
-    pkflags=" --host=riscv32-unknown-elf"
+          openocdflags=" --enable-remote-bitbang --disable-werror"
+          isa_simflags=" --with-fesvr=$RISCV --with-isa=rv32ima"
+    gnu_toolchainflags=" --with-arch=rv32ima --with-abi=ilp32"
+               pkflags=" --host=riscv32-unknown-elf"
 fi
 
 
@@ -102,7 +107,7 @@ if [ "x$RISCV" = "x" ]; then
 fi
 
 # Use gmake instead of make if it exists.
-MAKE=`command -v gmake || command -v make`
+MAKE=$(command -v gmake || command -v make)
 
 PATH="$RISCV/bin:$PATH"
 #GCC_VERSION=`gcc -v 2>&1 | tail -1 | awk '{print $3}'`
@@ -129,42 +134,41 @@ build_project () {
 
   mkdir -p "$PROJECT/build"
   cd "$PROJECT/build"
-  echo `git rev-parse HEAD` > build.version
-  echo "Configuring project $PROJECT"
-  ../configure $* > build.log
-  echo "Building project $PROJECT"
+  git rev-parse HEAD > build.log
+  echo "Configuring $PROJECT"
+  ../configure $* >> build.log
+  echo "Building $PROJECT"
   $MAKE >> build.log
-  echo "Installing project $PROJECT"
+  echo "Installing $PROJECT"
   $MAKE install >> build.log
   cd - > /dev/null
 }
 
-
 echo "Starting RISC-V Toolchain build process"
 
 if [ $all ] || [ $openocd ]; then
-    build_project riscv-openocd --prefix=$RISCV/build "$openocdflags"
+    build_project riscv-openocd --prefix="$RISCV/build" "$openocdflags"
 fi
 
 if [ $all ] || [ $fesvr ]; then
-    build_project riscv-fesvr --prefix=$RISCV/build "$fesvrflags"
+    build_project riscv-fesvr --prefix="$RISCV/build" "$fesvrflags"
 fi
 
-if [ $all ] || [ $isa ] || [ $rv32ima ]; then
-    build_project riscv-isa-sim --prefix=$RISCV/build "$isaflags"
+if [ $all ] || [ $isa_sim ] || [ $rv32ima ]; then
+    build_project riscv-isa-sim --prefix="$RISCV/build" "$isa_simflags"
 fi
 
-if [ $all ] || [ $gnu ] || [ $rv32ima ]; then
-    build_project riscv-gnu-toolchain --prefix=$RISCV/build "$gnuflags"
+if [ $all ] || [ $gnu_toolchain ] || [ $rv32ima ]; then
+    build_project riscv-gnu-toolchain --prefix="$RISCV/build" "$gnu_toolchainflags"
 fi
 
 if [ $all ] || [ $pk ] || [ $rv32ima ]; then
-    CC= CXX= build_project riscv-pk --prefix=$RISCV/build "$pkflags"
+    CC='' CXX='' build_project riscv-pk --prefix="$RISCV/build" "$pkflags"
 fi
 
 if [ $all ] || [ $tests ]; then
-    build_project riscv-tests --prefix=$RISCV/build/riscv64-unknown-elf "$testsflags"
+    build_project riscv-tests --prefix="$RISCV/build/riscv64-unknown-elf" "$testsflags"
 fi
 
-echo -e "\\nRISC-V Toolchain installation complete!"
+printf "\nRISC-V Toolchain installation complete!"
 
