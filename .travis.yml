@@ -30,7 +30,6 @@ env:
     - PATH="/home/travis/riscv_install/bin:$PATH"
 
 before_install:
-  - mkdir -p $RISCV
   # don't forget to clone riscv-tests/env
   - git submodule update --init riscv-tests
   # openocd also needs submodules
