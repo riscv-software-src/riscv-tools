@@ -198,3 +198,5 @@ fi
 
 [ "$verbose" ] && printf "\nRISC-V Toolchain installation complete!"
 
+exit 0
+
