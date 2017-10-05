@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 usage () {
     echo "usage: $0 <directory> [-h] [-v] [-d] [<tool> --<flag> ...] [<tool>] ..."
@@ -93,7 +93,6 @@ gnu_toolchainflags=" "
         testsflags=" "
 
 
-[ "$1" = "-*" ] && echo "error: first argument must be a directory"; usage
 if [ ! -e "$1"  ]; then
     mkdir "$1"
 fi
@@ -161,8 +160,6 @@ fi
 MAKE=$(command -v gmake || command -v make)
 
 #GCC_VERSION=`gcc -v 2>&1 | tail -1 | awk '{print $3}'`
-
-set -e
 
 
 [ "$verbose" ] && echo "Starting RISC-V Toolchain build process"
