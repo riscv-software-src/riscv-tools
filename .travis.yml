@@ -1,6 +1,4 @@
 language: cpp
-# run on new infrastructure
-sudo: false
 cache: apt
 # required packages to install
 addons:
@@ -28,29 +26,21 @@ addons:
 
 env:
   global:
-    - RISCV="/home/travis/riscv_install"
     - MAKEFLAGS="-j2"
     - PATH="/home/travis/riscv_install/bin:$PATH"
 
 before_install:
-  # make install destination
   - mkdir -p $RISCV
   # don't forget to clone riscv-tests/env
-  - cd riscv-tests
-  - git submodule update --init
-  - cd ..
+  - git submodule update --init riscv-tests
   # openocd also needs submodules
-  - cd riscv-openocd
-  - git submodule update --init
-  - cd ..
-  # actually use new gcc
-  - export CXX=g++-4.8 CC=gcc-4.8
+  - git submodule update --init riscv-openocd
 
 # extra time duing long builds
 install: travis_wait
 
-# pexpect ends up in /usr/lib/python2.7/dist-packages, which is not part of the
-# default python path.
 script:
-  - ./build.sh
+  - ./build.sh /home/travis/riscv_install
+  # pexpect ends up in /usr/lib/python2.7/dist-packages,
+  # which is not part of the default python path.
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check

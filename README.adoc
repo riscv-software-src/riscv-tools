@@ -34,24 +34,28 @@ the following components:
 
 toc::[]
 
-This repo provides two guides: one installs the all of the `riscv-tools`
-along with the https://github.com/riscv/riscv-newlib/[`riscv-newlib`]
-library using the https://github.com/riscv/riscv-pk[`riscv-pk`]
-proxy kernel and the other installs only a subset of the `riscv-tools`
-with https://github.com/riscv/riscv-glibc[`riscv-glibc`] using the
+This repo provides two options for developing with RISC-V:
+one installs the all of the `riscv-tools` along with the
+https://github.com/riscv/riscv-newlib/[`riscv-newlib`] library using
+the https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel
+and the other installs only a subset of the `riscv-tools` with
+https://github.com/riscv/riscv-glibc[`riscv-glibc`] library using the
 https://github.com/riscv/riscv-linux[`riscv-linux`] kernel.
 
 Both options share a common setup but diverge around the time the
 `build.sh` script is executed; simply follow this guide from the start
-and we will let you know what to do based on the path you've chosen
-(you can, of course, do both).
+and we will let you know what to do based on the path you've chosen (you
+can, of course, do both).
+
+If you run into any troubles along the way, check the
+link:Troubleshooting.html[Troubleshooting] document and the
+https://github.com/riscv/riscv-tools/issues[issues] page on GitHub.
 
 
 == Quickstart
 
-    $ git submodule update --init --recursive
-    $ export RISCV=/path/to/install/the/riscv/toolchain
-    $ ./build.sh
+    $ git clone --recursive https://github.com/riscv/riscv-tools
+    $ ./build.sh <path/to/install/the/riscv/toolchain>
 
 === Dependencies
 
@@ -79,7 +83,7 @@ GCC >= 4.8). To use a compiler different than your system default, set
 the `CC` and `CXX` environment variables before running the `build.sh`
 script:
 
-    $ CC=gcc-4.8 CXX=g++-4.8 ./build.sh
+    $ CC=gcc-4.8 CXX=g++-4.8 ./build.sh <directory>
 
 == Setup
 
@@ -92,49 +96,37 @@ Build Unit] (SBU).
 
 === Obtaining and Compiling the Sources (7.87 SBU)
 
-Let's start by defining the directory in which we will install all of
-the necessary programs, let's call it `RISCV` and go there:
+Clone the `riscv-tools` repository along with all of the submodules:
 
-    $ export RISCV=/nice/big/directory
-    $ cd $RISCV
-
-The tools will be installed to `RISCV/build`.
-
-
-[WARNING]
-====
-If this does not place the `$RISCV/build/bin` subdirectory in your `PATH`
-environment variable, add it now:
-
-    $ export PATH=$PATH:$RISCV/build/bin
-====
-
-Now clone the `riscv-tools` repository:
-
-    $ git clone https://github.com/riscv/riscv-tools
-
-This command will only bring in submodule references to the repositories
-that we will need. Enter the newly-created riscv-tools directory and
-instruct Git to update all of the submodules.
-
-    $ cd riscv-tools
-    $ git submodule update --init --recursive
+    $ git clone --recursive https://github.com/riscv/riscv-tools
 
 
 == pk/Newlib Installation
 
-IMPORTANT: This section is only necessary if you want to use the full
-`riscv-tools` set (mainly, `riscv-newlib` and the `riscv-pk`); otherwise,
-skip down to the <<Linux/Glibc Installation>> section.
+IMPORTANT: This command will build the the full `riscv-tools` set; you
+don't *need* `riscv-newlib` and `riscv-pk` if you only want to develop
+on the `riscv-linux` kernel with the `riscv-glib` library; see the
+<<Linux/Glibc Installation>> section for more information.
 
-With everything else set up, run the `build.sh` script:
+Run the `build.sh` script to install all of the tools to <directory>:
 
-    $ ./build.sh
+    $ ./build.sh <directory>
+
+To see all of the available options, run with the `-h` flag: `./build.sh
+-h`.
+
+[WARNING]
+====
+In order for your shell to find the tools, the `<directory>/bin`
+subdirectory must be in your `PATH` environment variable; add it with
+
+    $ export PATH:$PATH:<directory>/bin
+====
+
 
 === Testing Your Toolchain
 
-Now that you have a toolchain, it'd be a good idea to test it on the
-quintessential "Hello world!" program:
+Let's test our new toolchain on the quintessential "Hello world!" program:
 
 .hello.c
 ----
@@ -149,11 +141,11 @@ Build it with the cross-compiler:
 
     $ riscv64-unknown-elf-gcc -o hello hello.c
 
-You may want to do `./hello` -- but not so fast. We can't even run `spike
+You may want to do `./hello` -- but not so fast! We can't even run `spike
 hello`, because our "Hello world!" program makes a system call which the
 host x86 system doesn't understand. We have to run the program within the
 proxy kernel, which itself is run by `spike`, the RISC-V architectural
-simulator. Run this command to execute your "Hello world!"  program:
+simulator. Run this command to execute your "Hello world!" program:
 
     $ spike pk hello
 
@@ -161,52 +153,41 @@ NOTE: The RISC-V architectural simulator, `spike`, takes as its argument the
 path of the binary to run. Then, `pk` receives as _its_ argument the
 name of the program you want to run.
 
-If this does not behave as expected, see the <<Troubleshooting>> section
-below. Otherwise, you're all set to develop on the RISC-V instruction
-set architecture with `riscv-newlib` and the proxy kernel!
+Now you're all set to develop on the RISC-V instruction set architecture
+with `riscv-newlib` and the proxy kernel!
+
 
 == Linux/Glibc Installation
 
 IMPORTANT: This section is only required for developing RISC-V on the
-`riscv-linux` kernel with the `riscv-glibc` library.
+`riscv-linux` kernel with the `riscv-glibc` library (otherwise, you can
+use the `riscv-pk` kernel with the `riscv-newlib` library).
 
-=== Installing the RISC-V simulator (0.40 SBU)
+=== Installing the RISC-V simulator & Building the Cross-Compiler (11.81 SBU)
 
 Instead of building all of the tools in the `riscv-tools` set, we only
-need to build `riscv-fesvr` and `riscv-isa-sim`.
+need to build `riscv-fesvr`, `riscv-isa-sim` and the `riscv-gnu-toolchain`
+(configured for `riscv-linux`).
 
 NOTE: If you want to build the full toolchain for later use, run
-`build.sh` without any arguments as done in the <<pk/Newlib Installation>>
-section.
+`build.sh <directory> all linux` instead.
 
 Let's build only the tools we need:
 
-    $ ./build.sh fesvr isa-sim
+    $ ./build.sh <directory> linux
 
-=== Building the Cross-Compiler (11.41 SBU)
+The `linux` argument builds `riscv64-unknown-linux-gnu-gcc`,the
+cross-compiler used to build binaries linked to `riscv-glibc`; you can
+pass the `-j[number]` flag after `linux` to build concurrently.
 
-`riscv64-unknown-linux-gnu-gcc` is the cross-compiler used to build
-binaries linked to the GNU C Library (`glibc`); configure it for your
-system with:
-
-    $ cd $RISCV/riscv-tools/riscv-gnu-toolchain
-    $ ./configure --prefix=$RISCV/build
-
-These instructions will place your `riscv64-unknown-linux-gnu-gcc`
-tools in the same directory as the `riscv64-unknown-elf-gcc`.
-
-Run the `linux` make target to start the build process:
-
-    $ make linux
 
 === Building the Linux Kernel (0.40 + ε SBU)
 
 ==== Obtaining the Kernel Sources
 
-We are finally poised to bring in the `riscv-linux` kernel sources. Let's
-put it with the rest of our programs at `RISCV`:
+We are finally poised to bring in the `riscv-linux` kernel sources:
 
-    $ cd $RISCV
+    $ cd ..
     $ git clone https://github.com/riscv/riscv-linux
 
 ==== Configuring the Linux Kernel
@@ -217,31 +198,25 @@ options to tweak. So starting with a default configuration should work
 out-of-the-box with the ISA simulator.
 
     $ cd riscv-linux
-    $ make ARCH=riscv defconfig
-
-If you want to change the default configuration, you can use a text-based
-GUI (ncurses) to edit the configuration:
-
-    $ make ARCH=riscv menuconfig
+    $ make ARCH=riscv defconfig   # or menuconfig to change the configuration
 
 Among other things, we have enabled by default: procfs, ext2, and the
 HTIF virtualized devices (a block driver and console).
 
-TIP: In development, it can be very useful to enable "early printk",
-which will print messages to the console if the kernel crashes very
-early. You can access this option at "Early printk" in the "Kernel
-hacking" submenu.
+TIP: In development, it can be very useful to enable `Kernel hacking`
+→ `Early printk`, which will print messages to the console if the
+kernel crashes very early.
 
 Once you're satisfied with your configuration, begin building the
 kernel.
 
-WARNING: to build the RISC-V kernel, you _must_ set the `ARCH` variable
+WARNING: To build the RISC-V kernel, you _must_ set the `ARCH` variable
 to `riscv` in each invocation of `make`.
 
-If you want to speed up the process, you can pass the `-j[number]`
+TIP: If you want to speed up the process, you can pass the `-j[number]`
 option to use `[number]` threads.
 
-    $ make -j16 ARCH=riscv
+    $ make -j4 ARCH=riscv
 
 Congratulations! You've just cross-compiled the Linux kernel for RISC-V.
 However, there are a few more things to take care of before we boot it.
@@ -254,9 +229,10 @@ binary.
 
 First, obtain and untar the source:
 
+    $ cd ..
     $ curl -L http://busybox.net/downloads/busybox-1.26.2.tar.bz2 | tar xjf -
 
-Then, enter the directory and turn off every configuration option:
+Then, enter that directory and turn off every configuration option:
 
     $ cd busybox-1.26.2
     $ make allnoconfig
@@ -290,32 +266,13 @@ Once you've finished, compile BusyBox.
 TIP: You don't need to specify `ARCH` here, because we've already passed
 the name of the cross-compiler prefix.
 
-    $ make -j16
+    $ make -j4
 
 Once that completes, you'll have a BusyBox binary cross-compiled to
-run on RISC-V. Now let's create a root disk image that will allow the
-kernel access to the binary.
+run on RISC-V. 
 
-=== Creating a Root Disk Image
-
-We use an initramfs to store our binaries. Use the `mkroot.sh` script
-to create the root disk image (run `./mkroot.sh -h` to see all of
-the available options):
-
-    $ cd $RISCV
-    $ ./mkroot.sh
-
-[TIP]
-====
-`mkroot.sh` creates symlinks that will persist between boots. This
-will cause a bunch of unsightly errors in every subsequent boot of
-the kernel. To get rid of them, comment out (or delete) this line of
-`mnt/etc/inittab` after the first boot:
-
-    ::sysinit:/bin/busybox --install -s
-====
-
-Now configure linux to embed the new rootfs:
+Now configure linux to use a root disk image so the kernel has access
+to the binary:
 
     $ cd riscv-linux
     $ make ARCH=riscv menuconfig
@@ -323,13 +280,12 @@ Now configure linux to embed the new rootfs:
 ``::
 General Setup → "Initial RAM filesystem and RAM disk"
 ``::
-General Setup → "Initramfs source file" → "rootfs.cpio"
+General Setup → "Initramfs source file" → "../riscv-tools/initramfs.txt"
 
 Don't forget to rebuild `riscv-linux` and `riscv-pk`!
 
     $ make -j4 ARCH=riscv vmlinux
-    $ cd $RISCV
-    $ ./build.sh pk --host=riscv64-unknown-linux-gnu --with-payload=$RISCV/riscv-linux/vmlinux
+    $ ./build.sh <directory> pk --host=riscv64-unknown-linux-gnu --with-payload=<riscv-linux>/vmlinux
 
 Now, we're ready to boot a most basic kernel, with a shell. Invoke
 `spike` to use the `bbl` binary to run the `vmlinux` compiled Linux
@@ -344,146 +300,6 @@ fun and report back!
 
 To exit the simulator, kill the current process with `Ctrl-C`.
 
-
-== Troubleshooting
-
-Most of the errors below were seen when trying to build `riscv-tools` on
-a CentOS linux distribution with nfs file-system.
-
-
-=== Installing a Fresh Copy of the Linux Headers
-
-If your Linux system headers have been changed, you'll need
-to install a new version to your system root before you build
-`riscv64-unknown-linux-gnu-gcc` to ensure the kernel and the C library
-agree on their interfaces.
-
-First, go to the Linux directory and perform a headers check:
-
-    $ cd $RISCV/riscv-linux
-    $ make ARCH=riscv headers_check
-
-Once the headers have been checked, install them.
-
-    $ make ARCH=riscv headers_install INSTALL_HDR_PATH=$RISCV/build/sysroot64/usr
-
-
-=== C++11 is not supported, although gcc is updated
-
-This problem occured due to old OS installation repository. A possible
-solution for CentOS distribution:
-
-    $ wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
-    # yum upgrade
-    # yum install devtoolset-2-gcc devtoolset-2-binutils devtoolset-2-gcc-c++
-    $ scl enable devtoolset-2 bash
-
-Last operation will open a shell. Try to run `build.sh` from within this
-shell.
-
-=== error: Building GCC requires GMP 4.2+, MPFR 2.4.0+ and MPC 0.8.0+
-
-Try the following:
-
-    $ cd $RISCV/riscv-tools/riscv-gnu-toolchain/riscv-gcc
-    $ contrib/download_prerequisites
-    # yum install gmp gmp-devel mpfr mpfr-devel libmpc libmpc-devel
-
-Also be sure you have <<C++11 Compiler Support>>.
-
-=== Build script got stuck on "Installing project riscv-fesvr"
-
-That's a problem of output redirection. Open the `build.sh` file and
-change the following line:
-
-    $MAKE install >> build.log
-
-to:
-
-    $MAKE install | tee install.log
-
-Then when you run the build script, you will see requests to press y to
-continue which were hidden before.
-
-=== Problems with "flock"
-
-Some filesystems don't support flock, e.g. nfs (you can check your
-filesystem with `df -Th`). Delete `+flock $(SYSROOT)/.lock` in the
-following files:
-
- * `riscv-tools/riscv-gnu-toolchain/Makefile`
- * `riscv-tools/riscv-gnu-toolchain/Makefile.in`
- * `riscv-tools/riscv-gnu-toolchain/build/Makefile`
-
-Avoid building with concurrency (i.e. avoid running make with the
--j flag).
-
-=== These critical programs are missing or too old: make
-
-Not sure why, but gmake doesn't work well for the `riscv-tools` build on
-some platforms. In order to use make instead of gmake, open the file
-`$RISCV/riscv-tools/riscv-gnu-toolchain/riscv-glibc/configure` and replace
-the following line:
-
-    for ac_prog in gnumake gmake make
-
-with:
-
-    for ac_prog in gnumake make gmake
-
-=== "Operation not permitted" when trying to create character device
-
-This may occur when running the following command:
-
-    # mknod dev/console c 5 1
-
-Even if you have superuser permissions, you may still see this message
-in some filesystems (e.g., nfs). You can create a virtual drive with:
-
-    $ dd if=/dev/zero of=root.bin bs=1M count=64
-    $ mkfs.ext2 -F root.bin
-    $ chmod 777 root.bin
-    $ mkdir mnt
-    # mount -o loop root.bin mnt
-
-If the `mkfs.ext2` command is not found, try instead:
-
-    $ /sbin/mkfs.ext2 -F root.bin
-
-Copy the contents in the above created `root` directory into the new `mnt`
-directory and continue to create the cpio archive with the `mnt` directory
-instead of the `root` directory.
-
-When finished, you may unmount by:
-
-    $ cd ..
-    # umount root.bin
-
-=== Error on build about "mcmodel=medany"
-
-Such error may occur in one of the stages that requires the RISC-V gcc
-compiler. Some build stages use the default x86 gcc compiler installed
-on the x86 machine to compile if the RISC-V gcc not found. Some possible
-cases for that:
-
- * $RISCV/build/bin is not in $PATH
- * RISC-V compiler is not built or has been for the wrong variant (built for
-newlib and not for linux, 32/64 bit variant issue...).
- * gcc path is wrong. For example, if
-`CONFIG_CROSS_COMPILER_PREFIX=riscv-linux-` is used in the Busybox build
-configuration instead of
-`CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-` but the RISC-V
-compiler is built into riscv64-unknown-linux-gnu-gcc, the busybox
-configurator will not find the correct gcc and will use the x86 as
-default. Similar problem may occur when compiling
-`riscv-pk` with a wrong --host argument.
-
-=== Spike exits immediately with "This is bbl's dummy_payload" message
-
-`riscv-pk` should be rebuilt with `--with-payload` flag that points to
-the compiled vmlinux:
-
-    $ ./build.sh pk --host=riscv64-unknown-linux-gnu --with-payload=$RISCV/riscv-linux/vmlinux
 
 == FAQ
 
@@ -521,3 +337,4 @@ https://ocf.berkeley.edu/~qmn[Quan Nguyen] and is available, in two
 parts, at https://ocf.berkeley.edu/~qmn/linux/install-newlib.html and
 https://ocf.berkeley.edu/~qmn/linux/install.html; recent updates were
 made by Sagar Karandikar.
+

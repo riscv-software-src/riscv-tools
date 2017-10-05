@@ -1,0 +1,146 @@
+= Troubleshooting
+
+Most of the errors here were seen when trying to build `riscv-tools` on
+a CentOS linux distribution with nfs file-system.
+
+
+== Installing a Fresh Copy of the Linux Headers
+
+If your Linux system headers have been changed, you'll need
+to install a new version to your system root before you build
+`riscv64-unknown-linux-gnu-gcc` to ensure the kernel and the C library
+agree on their interfaces.
+
+First, go to the Linux directory and perform a headers check:
+
+    $ cd <riscv-linux>
+    $ make ARCH=riscv headers_check
+
+Once the headers have been checked, install them.
+
+    $ make ARCH=riscv headers_install INSTALL_HDR_PATH=path/to/build/sysroot64/usr
+
+
+== C++11 is not supported, although gcc is updated
+
+This problem occured due to old OS installation repository. A possible
+solution for CentOS distribution:
+
+    $ wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+    # yum upgrade
+    # yum install devtoolset-2-gcc devtoolset-2-binutils devtoolset-2-gcc-c++
+    $ scl enable devtoolset-2 bash
+
+Last operation will open a shell. Try to run `build.sh` from within this
+shell.
+
+== error: Building GCC requires GMP 4.2+, MPFR 2.4.0+ and MPC 0.8.0+
+
+Try the following:
+
+    $ cd <riscv-tools>/riscv-gnu-toolchain/riscv-gcc
+    $ contrib/download_prerequisites
+    # yum install gmp gmp-devel mpfr mpfr-devel libmpc libmpc-devel
+
+Also be sure you have <<C++11 Compiler Support>>.
+
+== Build script got stuck on "Installing project riscv-fesvr"
+
+That's a problem of output redirection. Open the `build.sh` file and
+change the following line:
+
+    $MAKE install >> build.log
+
+to:
+
+    $MAKE install | tee install.log
+
+Then when you run the build script, you will see requests to press y to
+continue which were hidden before.
+
+== Problems with "flock"
+
+Some filesystems don't support flock, e.g. nfs (you can check your
+filesystem with `df -Th`). Delete `+flock $(SYSROOT)/.lock` in the
+following files:
+
+ * `riscv-tools/riscv-gnu-toolchain/Makefile`
+ * `riscv-tools/riscv-gnu-toolchain/Makefile.in`
+ * `riscv-tools/riscv-gnu-toolchain/build/Makefile`
+
+Avoid building with concurrency (i.e. avoid running make with the
+-j flag).
+
+== These critical programs are missing or too old: make
+
+Not sure why, but gmake doesn't work well for the `riscv-tools` build on
+some platforms. In order to use make instead of gmake, open the file
+`riscv-tools/riscv-gnu-toolchain/riscv-glibc/configure` and replace
+the following line:
+
+    for ac_prog in gnumake gmake make
+
+with:
+
+    for ac_prog in gnumake make gmake
+
+== "Operation not permitted" when trying to create character device
+
+This may occur when running the following command:
+
+    # mknod dev/console c 5 1
+
+Even if you have superuser permissions, you may still see this message
+in some filesystems (e.g., nfs). You can create a virtual drive with:
+
+    $ dd if=/dev/zero of=root.bin bs=1M count=64
+    $ mkfs.ext2 -F root.bin
+    $ chmod 777 root.bin
+    $ mkdir mnt
+    # mount -o loop root.bin mnt
+
+If the `mkfs.ext2` command is not found, try instead:
+
+    $ /sbin/mkfs.ext2 -F root.bin
+
+Copy the contents in the above created `root` directory into the new `mnt`
+directory and continue to create the cpio archive with the `mnt` directory
+instead of the `root` directory.
+
+When finished, you may unmount by:
+
+    $ cd ..
+    # umount root.bin
+
+== Error on build about "mcmodel=medany"
+
+Such error may occur in one of the stages that requires the RISC-V gcc
+compiler. Some build stages use the default x86 gcc compiler installed
+on the x86 machine to compile if the RISC-V gcc not found. Some possible
+cases for that:
+
+ * $RISCV/bin is not in $PATH
+ * RISC-V compiler is not built or has been for the wrong variant (built for
+newlib and not for linux, 32/64 bit variant issue...).
+ * gcc path is wrong. For example, if
+`CONFIG_CROSS_COMPILER_PREFIX=riscv-linux-` is used in the Busybox build
+configuration instead of
+`CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-` but the RISC-V
+compiler is built into riscv64-unknown-linux-gnu-gcc, the busybox
+configurator will not find the correct gcc and will use the x86 as
+default. Similar problem may occur when compiling
+`riscv-pk` with a wrong --host argument.
+
+== Spike exits immediately with "This is bbl's dummy_payload" message
+
+`riscv-pk` should be rebuilt with the `--with-payload` flag that points to
+the compiled vmlinux:
+
+    $ ./build.sh pk --host=riscv64-unknown-linux-gnu --with-payload=riscv-linux/vmlinux
+
+== error: ‘scm_new_port_table_entry’ was not declared in this scope 
+
+Pass the `--with-guile` option to `riscv-gnu-toolchain`
+
+    $ ./build.sh gnu_toolchain --with-guile=no
+
