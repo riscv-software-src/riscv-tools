@@ -84,15 +84,6 @@ build_project () {
 }
 
 
-# default flags
-      openocdflags=" --enable-remote-bitbang --enable-jtag_vpi --disable-werror"
-        fesvrflags=" "
-      isa_simflags=" --with-fesvr=$RISCV"
-gnu_toolchainflags=" "
-           pkflags=" --host=riscv64-unknown-elf"
-        testsflags=" "
-
-
 if [ ! -e "$1"  ]; then
     mkdir "$1"
 fi
@@ -101,6 +92,16 @@ RISCV=$(cd "$(dirname -- "$1/.")"; printf %s "$PWD")
 shift
 
 export PATH="${RISCV}/bin:$PATH"
+
+
+# default flags
+      openocdflags=" --enable-remote-bitbang --enable-jtag_vpi --disable-werror"
+        fesvrflags=" "
+      isa_simflags=" --with-fesvr=$RISCV"
+gnu_toolchainflags=" "
+           pkflags=" --host=riscv64-unknown-elf"
+        testsflags=" "
+
 
 while test $# -gt 0; do
     case "$1" in

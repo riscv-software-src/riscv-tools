@@ -39,7 +39,7 @@ before_install:
 install: travis_wait
 
 script:
-  - ./build.sh /home/travis/riscv_install
+  - ./build.sh /home/travis/riscv_install -d
   # pexpect ends up in /usr/lib/python2.7/dist-packages,
   # which is not part of the default python path.
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check
