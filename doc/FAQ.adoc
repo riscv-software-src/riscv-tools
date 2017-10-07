@@ -1,0 +1,15 @@
+= FAQ
+
+== What's Newlib?
+
+https://www.sourceware.org/newlib/[Newlib] is a "C library intended for
+use on embedded systems." It has the advantage of not having so much cruft
+as Glibc at the obvious cost of incomplete support (and idiosyncratic
+behavior) in the fringes. The porting process is much less complex than
+that of Glibc because you only have to fill in a few stubs of glue code.
+
+These stubs of code include the system calls that are supposed to
+call into the operating system you're running on. Because there's
+no operating system proper, the simulator runs (on top of it) a proxy
+kernel (`riscv-pk`) to handle many system calls, like `open`, `close`,
+and `printf`.

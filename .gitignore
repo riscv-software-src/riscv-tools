@@ -1,3 +1,6 @@
-build/
+install/
+busybox-*
+initramfs.txt
+inittab
 *.log
 *.html

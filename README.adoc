@@ -1,7 +1,4 @@
 = riscv-tools image:https://travis-ci.org/riscv/riscv-tools.svg?branch=master["Build Status",link="https://travis-ci.org/riscv/riscv-tools"]
-:toc: macro
-:toclevels: 1
-
 
 The RISC-V toolchain is a set of tools for developing software on the
 https://riscv.org[RISC-V] instruction set architecture; it consists of
@@ -19,6 +16,8 @@ the following components:
    - https://github.com/riscv/riscv-newlib[riscv-newlib] Newlib C Library
  * https://github.com/riscv/riscv-isa-sim[riscv-isa-sim]
     Spike, a RISC-V ISA simulator
+ * https://github.com/riscv/riscv-linux[riscv-linux]
+    the Linux kernel ported to RISC-V
  * https://github.com/riscv/riscv-llvm[riscv-llvm]
     low lever virtual machine image:https://travis-ci.org/riscv/riscv-llvm.svg?branch=riscv-trunk["Build Status",link="https://travis-ci.org/riscv/riscv-llvm"]
  * https://github.com/riscv/riscv-opcodes[riscv-opcodes]
@@ -32,32 +31,21 @@ the following components:
 
 '''
 
-toc::[]
+To develop with RISC-V, you'll need at least one kernel and a C
+library. Currently, there exists
 
-This repo provides two options for developing with RISC-V:
-one installs the all of the `riscv-tools` along with the
-https://github.com/riscv/riscv-newlib/[`riscv-newlib`] library using
-the https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel
-and the other installs only a subset of the `riscv-tools` with
-https://github.com/riscv/riscv-glibc[`riscv-glibc`] library using the
-https://github.com/riscv/riscv-linux[`riscv-linux`] kernel.
+ . the https://github.com/riscv/riscv-newlib/[`riscv-newlib`] library using
+the https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel and
+ . the https://github.com/riscv/riscv-glibc[`riscv-glibc`] library
+using the https://github.com/riscv/riscv-linux[`riscv-linux`] kernel.
 
-Both options share a common setup but diverge around the time the
-`build.sh` script is executed; simply follow this guide from the start
-and we will let you know what to do based on the path you've chosen (you
-can, of course, do both).
-
-If you run into any troubles along the way, check the
-link:Troubleshooting.html[Troubleshooting] document and the
+See the link:doc/FAQ.html[FAQ] for more information about the different
+options. If you run into any troubles along your RISC-V journey, check
+the link:doc/Troubleshooting.html[Troubleshooting] document and the
 https://github.com/riscv/riscv-tools/issues[issues] page on GitHub.
 
 
-== Quickstart
-
-    $ git clone --recursive https://github.com/riscv/riscv-tools
-    $ ./build.sh <path/to/install/the/riscv/toolchain>
-
-=== Dependencies
+== Dependencies
 
 Ubuntu:
 
@@ -79,48 +67,48 @@ with Apple's command-line developer tools (clang) in addition to gcc.
 === C++11 Compiler Support
 
 Building `riscv-tools` requires a compiler with support for C++11 (e.g.,
-GCC >= 4.8). To use a compiler different than your system default, set
-the `CC` and `CXX` environment variables before running the `build.sh`
-script:
+GCC >= 4.8). To use a compiler different than your system default, export
+the `CC` and `CXX` environment variables:
 
-    $ CC=gcc-4.8 CXX=g++-4.8 ./build.sh <directory>
+    $ export CC=gcc-4.8 CXX=g++-4.8
 
-== Setup
+
+== Obtaining the Sources
+
+Clone the `riscv-tools` repository along with all of its submodules:
+
+    $ git clone --recursive https://github.com/riscv/riscv-tools
 
 [NOTE]
 ====
-Build times have been provided in terms of the
-http://linuxfromscratch.org/lfs/view/stable/chapter04/aboutsbus.html[Standard
-Build Unit] (SBU).
+If you've already cloned the repo but didn't include the
+submodules, you can update them all with:
+
+    $ git submodules update --init --recursive
+
 ====
-
-=== Obtaining and Compiling the Sources (7.87 SBU)
-
-Clone the `riscv-tools` repository along with all of the submodules:
-
-    $ git clone --recursive https://github.com/riscv/riscv-tools
 
 
 == pk/Newlib Installation
 
-IMPORTANT: This command will build the the full `riscv-tools` set; you
-don't *need* `riscv-newlib` and `riscv-pk` if you only want to develop
-on the `riscv-linux` kernel with the `riscv-glib` library; see the
-<<Linux/Glibc Installation>> section for more information.
+The easiest path to RISC-V is to use the `riscv-pk` kernel and the
+`riscv-newlib` library.
 
-Run the `build.sh` script to install all of the tools to <directory>:
+Run `make` without any arguments to install those tools:
 
-    $ ./build.sh <directory>
+    $ make
 
-To see all of the available options, run with the `-h` flag: `./build.sh
--h`.
+NOTE: This will install the tools in the `./install/` directory by
+default, to change that set the `RISCV` variable when running make:
+`make RISCV=/somewhere/else`.  To see all of the available options, run
+`make help`.
 
 [WARNING]
 ====
-In order for your shell to find the tools, the `<directory>/bin`
-subdirectory must be in your `PATH` environment variable; add it with
+In order for your shell to find the tools, the `<RISCV>/bin` subdirectory
+must be in your `PATH` environment variable; add the default path with
 
-    $ export PATH:$PATH:<directory>/bin
+    $ export PATH=$PATH:${PWD}/install/bin
 ====
 
 
@@ -141,11 +129,10 @@ Build it with the cross-compiler:
 
     $ riscv64-unknown-elf-gcc -o hello hello.c
 
-You may want to do `./hello` -- but not so fast! We can't even run `spike
-hello`, because our "Hello world!" program makes a system call which the
-host x86 system doesn't understand. We have to run the program within the
-proxy kernel, which itself is run by `spike`, the RISC-V architectural
-simulator. Run this command to execute your "Hello world!" program:
+In order to run this RISC-V binary on our X86 host machine, we need the
+RISC-V ISA simulator, `riscv-isa-sim` (a.k.a., `spike`) to run the proxy
+kernel which can understand the non-native system calls made by our new
+"Hello World!" binary:
 
     $ spike pk hello
 
@@ -154,7 +141,7 @@ path of the binary to run. Then, `pk` receives as _its_ argument the
 name of the program you want to run.
 
 Now you're all set to develop on the RISC-V instruction set architecture
-with `riscv-newlib` and the proxy kernel!
+with `riscv-newlib` and `riscv-pk`!
 
 
 == Linux/Glibc Installation
@@ -163,132 +150,26 @@ IMPORTANT: This section is only required for developing RISC-V on the
 `riscv-linux` kernel with the `riscv-glibc` library (otherwise, you can
 use the `riscv-pk` kernel with the `riscv-newlib` library).
 
-=== Installing the RISC-V simulator & Building the Cross-Compiler (11.81 SBU)
+Instead of building all of the tools in the `riscv-tools` set,
+we only *need* to build `riscv-fesvr`, `riscv-isa-sim` and the
+`riscv-gnu-toolchain` (configured for `riscv-linux`).
 
-Instead of building all of the tools in the `riscv-tools` set, we only
-need to build `riscv-fesvr`, `riscv-isa-sim` and the `riscv-gnu-toolchain`
-(configured for `riscv-linux`).
+In addition, this will download https://www.busybox.net[BusyBox] to give
+us a set of basic utilities once we've booted the Linux kernel.
 
-NOTE: If you want to build the full toolchain for later use, run
-`build.sh <directory> all linux` instead.
-
-Let's build only the tools we need:
-
-    $ ./build.sh <directory> linux
-
-The `linux` argument builds `riscv64-unknown-linux-gnu-gcc`,the
-cross-compiler used to build binaries linked to `riscv-glibc`; you can
-pass the `-j[number]` flag after `linux` to build concurrently.
-
-
-=== Building the Linux Kernel (0.40 + ε SBU)
-
-==== Obtaining the Kernel Sources
-
-We are finally poised to bring in the `riscv-linux` kernel sources:
-
-    $ cd ..
-    $ git clone https://github.com/riscv/riscv-linux
-
-==== Configuring the Linux Kernel
-
-The Linux kernel is seemingly infinitely-configurable. However, with the
-current development status of RISC-V, there aren't that many devices or
-options to tweak. So starting with a default configuration should work
-out-of-the-box with the ISA simulator.
-
-    $ cd riscv-linux
-    $ make ARCH=riscv defconfig   # or menuconfig to change the configuration
-
-Among other things, we have enabled by default: procfs, ext2, and the
-HTIF virtualized devices (a block driver and console).
-
-TIP: In development, it can be very useful to enable `Kernel hacking`
-→ `Early printk`, which will print messages to the console if the
-kernel crashes very early.
-
-Once you're satisfied with your configuration, begin building the
-kernel.
-
-WARNING: To build the RISC-V kernel, you _must_ set the `ARCH` variable
-to `riscv` in each invocation of `make`.
+You can do all of this with `make`:
 
 TIP: If you want to speed up the process, you can pass the `-j[number]`
 option to use `[number]` threads.
 
-    $ make -j4 ARCH=riscv
+    $ make -j4 linux
 
-Congratulations! You've just cross-compiled the Linux kernel for RISC-V.
-However, there are a few more things to take care of before we boot it.
 
-=== Building BusyBox (0.26 SBU)
+The `linux` argument builds `riscv64-unknown-linux-gnu-gcc` (the
+cross-compiler used to build binaries linked to `riscv-glibc`), a
+`busybox` binary (`bbl`), and a compiled Linux kernel (`vmlinux`).
 
-We currently develop with https://www.busybox.net[BusyBox], an
-unbelievably useful set of utilities that all compile into one multi-use
-binary.
-
-First, obtain and untar the source:
-
-    $ cd ..
-    $ curl -L http://busybox.net/downloads/busybox-1.26.2.tar.bz2 | tar xjf -
-
-Then, enter that directory and turn off every configuration option:
-
-    $ cd busybox-1.26.2
-    $ make allnoconfig
-
-Enter the configuration interface,
-
-    $ make menuconfig
-
-and change the following options (don't set `CONFIG_STATIC` if you want
-to compile dynamically):
-
-`CONFIG_STATIC=y`::
-    BusyBox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
-`CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-`::
-    BusyBox Settings → Build Options → Cross Compiler prefix
-`CONFIG_FEATURE_INSTALLER=y`::
-    BusyBox Setting → General Configuration → Support --install [-s] to install applet links at runtime
-`CONFIG_INIT=y`::
-    Init utilities → init
-`CONFIG_ASH=y`::
-    Shells → ash 
-`CONFIG_ASH_JOB_CONTROL=n`::
-    Shells → Ash → Job control
-`CONFIG_MOUNT=y`::
-    Linux System Utilities → mount
-`CONFIG_FEATURE_USE_INITTAB=y`::
-    Init Utilities → Support reading an inittab file
-
-Once you've finished, compile BusyBox.
-
-TIP: You don't need to specify `ARCH` here, because we've already passed
-the name of the cross-compiler prefix.
-
-    $ make -j4
-
-Once that completes, you'll have a BusyBox binary cross-compiled to
-run on RISC-V. 
-
-Now configure linux to use a root disk image so the kernel has access
-to the binary:
-
-    $ cd riscv-linux
-    $ make ARCH=riscv menuconfig
-
-``::
-General Setup → "Initial RAM filesystem and RAM disk"
-``::
-General Setup → "Initramfs source file" → "../riscv-tools/initramfs.txt"
-
-Don't forget to rebuild `riscv-linux` and `riscv-pk`!
-
-    $ make -j4 ARCH=riscv vmlinux
-    $ ./build.sh <directory> pk --host=riscv64-unknown-linux-gnu --with-payload=<riscv-linux>/vmlinux
-
-Now, we're ready to boot a most basic kernel, with a shell. Invoke
-`spike` to use the `bbl` binary to run the `vmlinux` compiled Linux
+Invoke `spike` to use the `bbl` binary to run the `vmlinux` compiled Linux
 kernel.
 
     $ spike bbl vmlinux
@@ -298,24 +179,8 @@ process completes. It will be pretty useless without the usual plethora
 of command-line utilities, but you can add them as BusyBox applets. Have
 fun and report back!
 
-To exit the simulator, kill the current process with `Ctrl-C`.
+NOTE: To exit the simulator, kill the process with `Ctrl-c`.
 
-
-== FAQ
-
-=== What's Newlib?
-
-https://www.sourceware.org/newlib/[Newlib] is a "C library intended for
-use on embedded systems." It has the advantage of not having so much cruft
-as Glibc at the obvious cost of incomplete support (and idiosyncratic
-behavior) in the fringes. The porting process is much less complex than
-that of Glibc because you only have to fill in a few stubs of glue code.
-
-These stubs of code include the system calls that are supposed to
-call into the operating system you're running on. Because there's
-no operating system proper, the simulator runs (on top of it) a proxy
-kernel (`riscv-pk`) to handle many system calls, like `open`, `close`,
-and `printf`.
 
 [bibliography]
 == References
@@ -332,9 +197,9 @@ http://www.csn.ul.ie/~mel/docs/vm/guide/pdf/understand.pdf, 2003.
 3rd ed., O'Reilly, 2005.
 - Beekmans, G. _Linux From Scratch_, version 7.3,
 http://www.linuxfromscratch.org/lfs/view/stable/, 2013.
-- This document was originally authored by
+- This document is based on one originally authored by
 https://ocf.berkeley.edu/~qmn[Quan Nguyen] and is available, in two
 parts, at https://ocf.berkeley.edu/~qmn/linux/install-newlib.html and
-https://ocf.berkeley.edu/~qmn/linux/install.html; recent updates were
+https://ocf.berkeley.edu/~qmn/linux/install.html; updates were also
 made by Sagar Karandikar.
 

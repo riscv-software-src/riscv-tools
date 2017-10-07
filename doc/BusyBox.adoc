@@ -1,0 +1,33 @@
+= BusyBox
+
+This guide is here to help you tweak BusyBox for the riscv-linux kernel.
+
+== Default Configuration
+
+The following configuration variables are set by default:
+
+`CONFIG_STATIC=y`::
+    BusyBox Settings → Build Options → Build BusyBox as a static binary (no shared libs)
+`CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu-`::
+    BusyBox Settings → Build Options → Cross Compiler prefix
+`CONFIG_FEATURE_INSTALLER=y`::
+    BusyBox Setting → General Configuration → Support --install [-s] to install applet links at runtime
+`CONFIG_INIT=y`::
+    Init utilities → init
+`CONFIG_ASH=y`::
+    Shells → ash 
+`CONFIG_ASH_JOB_CONTROL=n`::
+    Shells → Ash → Job control
+`CONFIG_MOUNT=y`::
+    Linux System Utilities → mount
+`CONFIG_FEATURE_USE_INITTAB=y`::
+    Init Utilities → Support reading an inittab file
+=== Building BusyBox
+
+We currently develop with https://www.busybox.net[BusyBox], an
+unbelievably useful set of utilities that all compile into one multi-use
+binary.
+
+To download and build BusyBox run:
+
+    $ make busybox

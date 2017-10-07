@@ -1,0 +1,11 @@
+= Linux
+
+Among other things, we have enabled by default: procfs, ext2, and the
+HTIF virtualized devices (a block driver and console).
+
+TIP: In development, it can be very useful to enable `Kernel hacking`
+→ `Early printk`, which will print messages to the console if the
+kernel crashes very early.
+
+WARNING: To build the RISC-V kernel, you _must_ set the `ARCH` variable
+to `riscv` in each invocation of `make`.
