@@ -22,3 +22,6 @@
 [submodule "riscv-openocd"]
 	path = riscv-openocd
 	url = https://github.com/riscv/riscv-openocd.git
+[submodule "riscv-linux"]
+	path = riscv-linux
+	url = https://github.com/riscv/riscv-linux
