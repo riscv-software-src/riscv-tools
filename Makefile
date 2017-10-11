@@ -22,6 +22,8 @@ tests         =
 
 .PHONY: all $(PROJECTS) help clean docs test linux busybox
 all: $(PROJECTS)
+	@echo "* Add the following to your profile:"
+	@echo "  export PATH=$(DEST)/bin:\$$PATH"
 
 .SECONDEXPANSION:
 # Each project relies on the existence of its own /build and /configure subdirectories.
@@ -44,37 +46,28 @@ build =\
 	$(MAKE) install >> build.log;\
 	cd $(ROOT) > /dev/null
 
-riscv-linux/vmlinux: linux
 linux: busybox
-	cd $(ROOT)/riscv-linux
-	$(MAKE) ARCH=riscv defconfig
-	$(MAKE) ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu-
+	$(MAKE) -C $(ROOT)/riscv-linux ARCH=riscv defconfig
+	$(MAKE) -C $(ROOT)/riscv-linux ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu-
 
-$(BUSYBOX)/busybox: busybox
+BBCONF := \
+CONFIG_STATIC=y \
+CONFIG_CROSS_COMPILER_PREFIX=riscv64-unknown-linux-gnu \
+CONFIG_FEATURE_INSTALLER=y \
+CONFIG_INIT=y \
+CONFIG_ASH=y \
+CONFIG_ASH_JOB_CONTROL=n \
+CONFIG_MOUNT=y \
+CONFIG_FEATURE_USE_INITTAB=y
+
 busybox:
 	[ -e "${BUSYBOX}" ] || curl -L http://busybox.net/downloads/${BUSYBOX}.tar.bz2 | tar xjf -
-	cd $(ROOT)/${BUSYBOX}
-	$(MAKE) allnoconfig
-
-	sed -i                                        \
-	'/CONFIG_STATIC/s/=.*/=y/'                    \
-	'/CONFIG_CROSS_COMPILER_PREFIX/s/=.*/=riscv64-unknown-linux-gnu/' \
-	'/CONFIG_FEATURE_INSTALLER/s/=.*/=y/'         \
-	'/CONFIG_INIT/s/=.*/=y/'                      \
-	'/CONFIG_ASH/s/=.*/=y/'                       \
-	'/CONFIG_ASH_JOB_CONTROL/s/=.*/=n/'           \
-	'/CONFIG_MOUNT/s/=.*/=y/'                     \
-	'/CONFIG_FEATURE_USE_INITTAB/s/=.*/=y/' .config
-
-	$(MAKE)
-	cd $(ROOT)/riscv-linux
-
+	$(MAKE) -C $(ROOT)/$(BUSYBOX) allnoconfig
+	$(foreach line, $(BBCONF), $(file >>$(ROOT)/$(BUSYBOX)/.config,$(line)))
+	$(MAKE) -C $(ROOT)/$(BUSYBOX)
 	#General Setup → "Initial RAM filesystem and RAM disk"
 	#General Setup → "Initramfs source file" → "rootfs.cpio"
-
-	$(MAKE) ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- vmlinux
-
-	cd $(ROOT)
+	$(MAKE) -C $(ROOT)/riscv-linux ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- vmlinux
 	$(MAKE) pk pk="--host=riscv64-unknown-linux-gnu --with-payload=$(ROOT)/riscv-linux/vmlinux"
 
 test: test-pk test-linux

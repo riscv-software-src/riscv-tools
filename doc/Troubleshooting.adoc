@@ -4,6 +4,15 @@ Most of the errors here were seen when trying to build `riscv-tools` on
 a CentOS linux distribution with nfs file-system.
 
 
+== C++11 Compiler Support
+
+Building `riscv-tools` requires a compiler with support for C++11 (e.g.,
+GCC >= 4.8). To use a compiler different than your system default, export
+the `CC` and `CXX` environment variables:
+
+    $ export CC=gcc-4.8 CXX=g++-4.8
+
+
 == Installing a Fresh Copy of the Linux Headers
 
 If your Linux system headers have been changed, you'll need

@@ -9,3 +9,22 @@ kernel crashes very early.
 
 WARNING: To build the RISC-V kernel, you _must_ set the `ARCH` variable
 to `riscv` in each invocation of `make`.
+
+Instead of building all of the tools in the `riscv-tools` set,
+we only *need* to build `riscv-fesvr`, `riscv-isa-sim` and the
+`riscv-gnu-toolchain` (configured for `riscv-linux`).
+
+In addition, this will download https://www.busybox.net[BusyBox] to give
+us a set of basic utilities once we've booted the Linux kernel.
+
+You can do all of this with `make`:
+
+TIP: If you want to speed up the process, you can pass the `-j[number]`
+option to use `[number]` threads.
+
+    $ make -j4 linux
+
+
+The `linux` argument builds `riscv64-unknown-linux-gnu-gcc` (the
+cross-compiler used to build binaries linked to `riscv-glibc`), a
+`busybox` binary (`bbl`), and a compiled Linux kernel (`vmlinux`).

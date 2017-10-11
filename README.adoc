@@ -31,18 +31,21 @@ the following components:
 
 '''
 
+
 To develop with RISC-V, you'll need at least one kernel and a C
-library. Currently, there exists
+library. Currently, there exists:
 
  . the https://github.com/riscv/riscv-newlib/[`riscv-newlib`] library using
-the https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel and
- . the https://github.com/riscv/riscv-glibc[`riscv-glibc`] library
-using the https://github.com/riscv/riscv-linux[`riscv-linux`] kernel.
+   the https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel and
+
+ . the https://github.com/riscv/riscv-glibc[`riscv-glibc`] library using
+   the https://github.com/riscv/riscv-linux[`riscv-linux`] kernel.
 
 See the link:doc/FAQ.html[FAQ] for more information about the different
-options. If you run into any troubles along your RISC-V journey, check
-the link:doc/Troubleshooting.html[Troubleshooting] document and the
-https://github.com/riscv/riscv-tools/issues[issues] page on GitHub.
+options. If you run into any troubles along your RISC-V journey,
+check the link:doc/Troubleshooting.html[Troubleshooting] document,
+the https://github.com/riscv/riscv-tools/issues[issues] page on GitHub,
+and the https://freenode.net[Freenode] #riscv IRC channel.
 
 
 == Dependencies
@@ -64,55 +67,30 @@ https://github.com/riscv/homebrew-riscv[homebrew-riscv]. This repo will build
 with Apple's command-line developer tools (clang) in addition to gcc.
 
 
-=== C++11 Compiler Support
+== Installation
 
-Building `riscv-tools` requires a compiler with support for C++11 (e.g.,
-GCC >= 4.8). To use a compiler different than your system default, export
-the `CC` and `CXX` environment variables:
-
-    $ export CC=gcc-4.8 CXX=g++-4.8
-
-
-== Obtaining the Sources
-
-Clone the `riscv-tools` repository along with all of its submodules:
+ . Clone the `riscv-tools` repository along with all of its submodules:
 
     $ git clone --recursive https://github.com/riscv/riscv-tools
 
-[NOTE]
-====
-If you've already cloned the repo but didn't include the
-submodules, you can update them all with:
+ . Now compile the tools.
 
-    $ git submodules update --init --recursive
+TIP: To speed up the proccess and compile concurrently, pass the `-j[int]`
+option to use `[int]` threads.
 
-====
-
-
-== pk/Newlib Installation
-
-The easiest path to RISC-V is to use the `riscv-pk` kernel and the
-`riscv-newlib` library.
-
-Run `make` without any arguments to install those tools:
+ .. To compile the https://github.com/riscv/riscv-newlib/[`riscv-newlib`]
+    library and https://github.com/riscv/riscv-pk[`riscv-pk`] proxy kernel run
 
     $ make
 
-NOTE: This will install the tools in the `./install/` directory by
-default, to change that set the `RISCV` variable when running make:
-`make RISCV=/somewhere/else`.  To see all of the available options, run
-`make help`.
+ .. To compile the https://github.com/riscv/riscv-glibc[`riscv-glibc`] library
+    using the https://github.com/riscv/riscv-linux[`riscv-linux`] kernel run
 
-[WARNING]
-====
-In order for your shell to find the tools, the `<RISCV>/bin` subdirectory
-must be in your `PATH` environment variable; add the default path with
+    $ make linux
 
-    $ export PATH=$PATH:${PWD}/install/bin
-====
+NOTE: To see all of the available options, run `make help`.
 
-
-=== Testing Your Toolchain
+== Testing Your Toolchain
 
 Let's test our new toolchain on the quintessential "Hello world!" program:
 
@@ -136,41 +114,14 @@ kernel which can understand the non-native system calls made by our new
 
     $ spike pk hello
 
-NOTE: The RISC-V architectural simulator, `spike`, takes as its argument the
-path of the binary to run. Then, `pk` receives as _its_ argument the
-name of the program you want to run.
-
 Now you're all set to develop on the RISC-V instruction set architecture
 with `riscv-newlib` and `riscv-pk`!
 
 
-== Linux/Glibc Installation
+== Booting Linux
 
-IMPORTANT: This section is only required for developing RISC-V on the
-`riscv-linux` kernel with the `riscv-glibc` library (otherwise, you can
-use the `riscv-pk` kernel with the `riscv-newlib` library).
-
-Instead of building all of the tools in the `riscv-tools` set,
-we only *need* to build `riscv-fesvr`, `riscv-isa-sim` and the
-`riscv-gnu-toolchain` (configured for `riscv-linux`).
-
-In addition, this will download https://www.busybox.net[BusyBox] to give
-us a set of basic utilities once we've booted the Linux kernel.
-
-You can do all of this with `make`:
-
-TIP: If you want to speed up the process, you can pass the `-j[number]`
-option to use `[number]` threads.
-
-    $ make -j4 linux
-
-
-The `linux` argument builds `riscv64-unknown-linux-gnu-gcc` (the
-cross-compiler used to build binaries linked to `riscv-glibc`), a
-`busybox` binary (`bbl`), and a compiled Linux kernel (`vmlinux`).
-
-Invoke `spike` to use the `bbl` binary to run the `vmlinux` compiled Linux
-kernel.
+Invoke `spike` to use the busybox (`bbl`) binary to run the compiled
+Linux kernel (`vmlinux`):
 
     $ spike bbl vmlinux
 

@@ -27,7 +27,7 @@ addons:
 env:
   global:
     - MAKEFLAGS="-j2"
-    - PATH="/home/travis/riscv_install/bin:$PATH"
+    - PATH="/home/travis/install/bin:$PATH"
 
 before_install:
   # don't forget to clone riscv-tests/env
@@ -39,7 +39,7 @@ before_install:
 install: travis_wait
 
 script:
-  - ./build.sh /home/travis/riscv_install -d
+  - make
   # pexpect ends up in /usr/lib/python2.7/dist-packages,
   # which is not part of the default python path.
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check
