@@ -27,7 +27,8 @@ addons:
 env:
   global:
     - MAKEFLAGS="-j2"
-    - PATH="/home/travis/install/bin:$PATH"
+    - RISCV="/home/travis/install"
+    - PATH="$RISCV/bin:$PATH"
 
 before_install:
   # don't forget to clone riscv-tests/env
