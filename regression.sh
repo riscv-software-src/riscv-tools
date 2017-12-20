@@ -15,7 +15,7 @@ export RISCV=${base_dir}/regression_install
 # test the tools
 export PATH="$RISCV/bin:$PATH"
 make -C ${base_dir}/riscv-tests/isa/ run
-make -C ${base_dir}/riscv-tests/benchmarks/ run-riscv
+make -C ${base_dir}/riscv-tests/benchmarks/ run riscv
 
 # test the pk
 echo -e '#include <stdio.h>\n int main(void) { printf("Hello world!\\n"); return 0; }' > hello.c
