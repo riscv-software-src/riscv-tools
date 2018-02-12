@@ -26,7 +26,7 @@ Ubuntu packages needed:
 
 Fedora packages needed:
 
-	$ sudo dnf install autoconf automake @development-tools curl dtc libmpc-devel mpfr-devel gmp-devel gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib-devel
+	$ sudo dnf install autoconf automake @development-tools curl dtc libmpc-devel mpfr-devel gmp-devel libusb-devel gawk gcc-c++ bison flex texinfo gperf libtool patchutils bc zlib-devel
 
 _Note:_ This requires a compiler with C++11 support (e.g. GCC >= 4.8).
 To use a compiler different than the default, use:
