@@ -315,7 +315,7 @@ from scratch if you:
   distributions of Linux/RISC-V, or want to build the latest bleeding-edge
   version of the kernel,
 * hack the kernel source code,
-* have special requirements for their operating system environment, and
+* have special requirements for your operating system environment, and
   therefore require a special initramfs (covered later),
 * want to learn how to build your own kernel, and/or
 * have a very particular notion of "fun".
