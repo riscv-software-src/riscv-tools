@@ -305,6 +305,35 @@ modifications) of the one found at
 [Quan's OCF
 website](https://ocf.berkeley.edu/~qmn/linux/install.html)
 
+### Who Builds, or Needs to Build, Linux/RISC-V from Scratch?
+
+Some people choose to build, or may _have_ to build, the Linux/RISC-V kernel
+from scratch, which is the subject of this guide. You might build the kernel
+from scratch if you:
+
+* need special kernel features that are not already available in existing
+  distributions of Linux/RISC-V, or want to build the latest bleeding-edge
+  version of the kernel,
+* hack the kernel source code,
+* have special requirements for your operating system environment, and
+  therefore require a special initramfs (covered later),
+* want to learn how to build your own kernel, and/or
+* have a very particular notion of "fun".
+
+If you're not sure whether you fall into the above categories, you may not need to
+compile your own kernel. It's especially true if you want to "just get something
+on RISC-V working", in which case you may be better served by downloading a
+_Linux/RISC-V distribution_, which not only offers a pre-built Linux/RISC-V kernel
+but also a set of the programs and utilities you'll need to get started quickly.
+
+Distributions include:
+
+* [riscv-poky](https://github.com/riscv/riscv-poky), a port of the
+  Yocto/OpenEmbedded project (considering this "pre-built" is not quite accurate
+  but it is far simpler than this guide)
+* [riscv-gentoo](https://github.com/riscv/riscv-gentoo)
+
+
 ## Table of Contents
 
 1.  Introduction
@@ -608,13 +637,18 @@ back into the directory with the Linux sources.
 
 ## <a name="creating-root-disk"></a> Creating a Root Disk Image
 
-We use an initramfs to store our binaries ([BusyBox](https://www.busybox.net) in
-particular).
+At this point, we have a compiled Linux kernel and some BusyBox utilities. We'll
+create an initramfs to round out a minimal operating system environment. An
+initramfs is an _initial_ file system that resides entirely in memory. It's much
+simpler to work with, especially in software simulation (namely, a time when
+the ISA simulator lacked mature IO support). You might want to build your own
+initramfs if you have special requirements, such as extremely limited storage.
 
-Currently, we have a root file system pre-packaged
-specifically for the RISC-V release. You can obtain it by heading to the index
-of my website, [https://ocf.berkeley.edu/~qmn](https://ocf.berkeley.edu/~qmn), finding my
-email, and contacting me.
+As a reminder, if you don't have any of these special requirements, or if
+you're trying out RISC-V for the first time, consider using
+[riscv-poky](https://github.com/riscv/riscv-poky), or any other Linux/RISC-V
+_distribution_, which sidesteps the need to create your own initramfs or even
+compile your own kernel.
 
 To create your own initramfs, there are a few directories that you should have:
 
