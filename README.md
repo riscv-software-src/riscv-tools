@@ -552,7 +552,7 @@ can be very useful to enable "early printk", which will print messages to the
 console if the kernel crashes very early. You can access this option at "Early
 printk" in the "Kernel hacking" submenu.
 
-<img src="http://riscv.org/install-guides/linux-menuconfig.png" />
+<img src="doc/linux-menuconfig.png" />
 
 _Linux kernel menuconfig interface._
 
@@ -618,7 +618,7 @@ Enter the configuration interface much in the same way as that of the Linux kern
 
 	O$ make menuconfig
 
-<img src="http://riscv.org/install-guides/busybox-menuconfig.png" />
+<img src="doc/busybox-menuconfig.png" />
 
 _BusyBox menuconfig interface. Looks familiar, eh?_
 
@@ -757,7 +757,7 @@ applets. Have fun!
 
 To exit the simulator, hit `Ctrl-C`.
 
-<img src="http://riscv.org/install-guides/linux-boot.png"/>
+<img src="doc/linux-boot.png"/>
 
 _Linux boot and "Hello world!"_
 
