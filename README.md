@@ -29,6 +29,11 @@ supported and maintained via their parent projects:
 * [Newlib](https://sourceware.org/newlib/), a C library
 * [OpenOCD](http://openocd.org/)
 
+Your favorite software distribution should already have packages for
+these upstream tools, but if it doesn't then the [RISC-V Port of
+OpenEmbedded](https://github.com/riscv/meta-riscv#quick-start) is a
+great place to start!
+
 # <a name="quickstart"></a>Quickstart
 
 	$ git submodule update --init --recursive
