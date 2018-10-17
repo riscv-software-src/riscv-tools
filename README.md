@@ -512,6 +512,7 @@ out-of-the-box with the ISA simulator.
 If you want to edit the configuration, you can use a text-based
 GUI (ncurses) to edit the configuration:
 
+	O$ sudo apt-get install ncurses-dev
 	O$ make ARCH=riscv menuconfig
 
 Among other things, we have enabled by default procfs, ext2,
@@ -565,7 +566,7 @@ libraries later). We will also enable the `init`, `ash`,
 and `mount` applets. Also, disable job control for `ash` 
 when the drop down menu for `ash`'s suboptions appear.
 
-Here are the configurations you will have to change:
+Here are the configurations you will have to change in the `.config` file:
 
 *   `CONFIG_STATIC=y`, listed as "Build
 BusyBox as a static binary (no shared libs)" in BusyBox Settings
@@ -582,6 +583,7 @@ listed as "Cross Compiler prefix" in BusyBox Settings &rarr; Build Options
 
 Enter the configuration interface much in the same way as that of the Linux kernel:
 
+	O$ sudo apt-get install ncurses-dev
 	O$ make menuconfig
 
 <img src="http://riscv.org/install-guides/busybox-menuconfig.png" />
