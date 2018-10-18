@@ -575,7 +575,7 @@ BusyBox as a static binary (no shared libs)" in BusyBox Settings
 listed as "Cross Compiler prefix" in BusyBox Settings &rarr; Build Options
 *   `CONFIG_FEATURE_INSTALLER=y`, listed as
 "Support --install [-s] to install applet links at runtime" in BusyBox Settings
-&rarr; General Configuration
+&rarr; Include busybox applet
 *   `CONFIG_INIT=y`, listed as "init" in Init utilities
 *   `CONFIG_ASH=y`, listed as "ash" in Shells
 *   `CONFIG_ASH_JOB_CONTROL=n`, listed as "Ash &rarr; Job control" in Shells
