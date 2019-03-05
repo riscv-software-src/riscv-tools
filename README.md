@@ -1,8 +1,8 @@
 riscv-tools [![Build Status](https://travis-ci.org/riscv/riscv-tools.svg?branch=master)](https://travis-ci.org/riscv/riscv-tools)
 ===========================================================================
 
-This repository houses a set of RISC-V simulators, compilers, and other
-tools, including the following projects:
+This repository houses a set of RISC-V simulators and other tools,
+including the following projects:
 
 * [Spike](https://github.com/riscv/riscv-isa-sim/), the ISA simulator
 * [riscv-tests](https://github.com/riscv/riscv-tests/), a battery of
@@ -14,23 +14,30 @@ a boot loader for Linux and similar OS kernels, and `pk`, a proxy kernel that
 services system calls for a target-machine application by forwarding them to
 the host machine
 
-Several RISC-V tools that were previously maintained through this repository
-have since been upstreamed to their parent projects.  Although this repository
-continues to contain versions of the following tools, they are now primarily
-supported and maintained via their parent projects:
+Several RISC-V tools that were previously maintained through this
+repository have since been upstreamed to their parent projects and are
+no longer included here.  Your favorite software distribution should
+already have packages for these upstream tools, but if it doesn't then
+here are a handful of my favorites:
 
-* [Binutils](https://www.gnu.org/software/binutils/)
-* [GCC](https://gcc.gnu.org/), the GNU C Compiler
-* [GDB](https://www.gnu.org/software/gdb/), the GNU Debugger
-* [glibc](https://www.gnu.org/software/libc/), the GNU C Library
-* [QEMU](https://www.qemu.org/), an emulator
-* [Newlib](https://sourceware.org/newlib/), a C library
-* [OpenOCD](http://openocd.org/)
+* Your favorite software distribution may already have packages that
+  include a RISC-V cross compiler, which is probably the fastest way to
+  get started.  As of writing this README (March, 2019) I can trivially
+  find packages for ALT Linux, Arch Linux, Debian, Fedora, FreeBSD,
+  Mageia, OpenMandriva, openSUSE, and Ubuntu.
+  [pkgs.org](https://pkgs.org/) appears to be a good place to find an up
+  to date list, just search for "riscv".
+* [crosstool-ng](http://crosstool-ng.github.io/docs/) can build RISC-V
+  cross compilers of various flavors.
+* The [RISC-V Port of
+  OpenEmbedded](https://github.com/riscv/meta-riscv#quick-start)
+  builds a cross compiler, Linux kernel, and enough of userspace to do
+  many interesting things.
+* [buildroot](https://github.com/buildroot/buildroot) is a lighter
+  weight cross compiled Linux distribution.
 
-Your favorite software distribution should already have packages for
-these upstream tools, but if it doesn't then the [RISC-V Port of
-OpenEmbedded](https://github.com/riscv/meta-riscv#quick-start) is a
-great place to start!
+This repository uses crosstool-ng to configure a `riscv64-unknown-elf`
+toolchain.
 
 # <a name="quickstart"></a>Quickstart
 
