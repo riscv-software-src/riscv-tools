@@ -22,6 +22,7 @@ addons:
       - bison
       - flex
       - texinfo
+      - help2man
       - python-pexpect
       - libusb-1.0-0-dev
       - device-tree-compiler
