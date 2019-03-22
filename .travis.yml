@@ -56,7 +56,7 @@ install: travis_wait
 script:
   - mkdir ~/src
   - curl http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-$CROSSTOOL_VERSION.tar.xz | tar -xJp
-  - cd crosstool-ng-$CROSSTOOL_VERSION; ./configure --prefix=$RISCV
+  - cd crosstool-ng-$CROSSTOOL_VERSION; ./configure --prefix=$RISCV; cd ..
   - make -C crosstool-ng-$CROSSTOOL_VERSION
   - make -C crosstool-ng-$CROSSTOOL_VERSION install
   - ct-ng riscv64-unknown-elf
