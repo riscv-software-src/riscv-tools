@@ -59,6 +59,6 @@ script:
   - make -C crosstool-ng-$CROSSTOOL_VERSION
   - make -C crosstool-ng-$CROSSTOOL_VERSION install
   - ct-ng riscv64-unknown-elf
-  - ct-ng build
+  - travis_wait 100 ct-ng build
   - ./build.sh
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check
