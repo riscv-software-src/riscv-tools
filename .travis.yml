@@ -45,8 +45,7 @@ before_install:
   - cd riscv-openocd
   - git submodule update --init
   - cd ..
-  # actually use new gcc
-  - export CXX=g++-4.8 CC=gcc-4.8
+  - unset CC CXX
 
 # extra time duing long builds
 install: travis_wait
