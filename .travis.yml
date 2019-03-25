@@ -74,6 +74,10 @@ script:
   # Remove new autotools from path
   - rm -f .build/riscv64-unknown-elf/buildtools/bin/automake*
   - rm -f .build/riscv64-unknown-elf/buildtools/bin/aclocal*
-  # Actually test this repo
+  # Actually build this repo
   - ./build.sh
+  # Put compiler in expected place for debug tests
+  - ln -s $TRAVIS_BUILD_DIR/.build/riscv64-unknown-elf/buildtools/bin/riscv64-unknown-elf-gcc $RISCV/bin
+  - ln -s $TRAVIS_BUILD_DIR/.build/riscv64-unknown-elf/buildtools/bin/riscv64-unknown-elf-gdb $RISCV/bin
+  # Run debug tests
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check
