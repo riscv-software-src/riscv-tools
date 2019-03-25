@@ -59,6 +59,10 @@ script:
   - make -C crosstool-ng-$CROSSTOOL_VERSION
   - make -C crosstool-ng-$CROSSTOOL_VERSION install
   - ct-ng riscv64-unknown-elf
+  - echo CT_CC_GCC_USE_GRAPHITE=n >> .config
+  - echo CT_ISL_NEEDED=n >> .config
+  - echo CT_ISL=n >> .config
+  - echo CT_MULTILIB=n >> .config
   # Newlib download fails periodically, so retry the build a few times.
   - travis_wait 100 ct-ng build || travis_wait 100 ct-ng build || travis_wait 100 ct-ng build
   - ./build.sh
