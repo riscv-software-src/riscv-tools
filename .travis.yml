@@ -31,6 +31,7 @@ env:
   global:
     - RISCV="/home/travis/riscv_install"
     - MAKEFLAGS="-j2"
+    - PATH="/home/travis/.build/riscv64-unknown-elf/buildtools/bin:$PATH"
     - PATH="/home/travis/riscv_install/bin:$PATH"
     - CROSSTOOL_VERSION=1.24.0-rc3
 
