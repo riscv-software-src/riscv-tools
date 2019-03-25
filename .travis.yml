@@ -71,6 +71,9 @@ script:
   - cp .build/riscv64-unknown-elf/build/build-libc/riscv64-unknown-elf/libgloss/riscv/crt0.o .build/riscv64-unknown-elf/buildtools/lib/gcc/riscv64-unknown-elf/8.3.0
   - cp -r .build/src/newlib-3.1.0.20181231/newlib/libc/include .build/riscv64-unknown-elf/buildtools/lib/gcc/riscv64-unknown-elf/8.3.0/../../../../riscv64-unknown-elf/include
   - cp .build/riscv64-unknown-elf/build/build-libc/riscv64-unknown-elf/newlib/libm.a .build/riscv64-unknown-elf/buildtools/lib/gcc/riscv64-unknown-elf/8.3.0
+  # Remove new autotools from path
+  - rm -f .build/riscv64-unknown-elf/buildtools/bin/automake*
+  - rm -f .build/riscv64-unknown-elf/buildtools/bin/aclocal*
   # Actually test this repo
   - ./build.sh
   - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages make -C riscv-tests/build debug-check
