@@ -13,8 +13,6 @@ enumeration of all RISC-V opcodes executable by the simulator
 a boot loader for Linux and similar OS kernels, and `pk`, a proxy kernel that
 services system calls for a target-machine application by forwarding them to
 the host machine
-* [riscv-fesvr](https://github.com/riscv/riscv-fesvr/), the host side of
-a simulation tether that services system calls on behalf of a target machine
 
 Several RISC-V tools that were previously maintained through this repository
 have since been upstreamed to their parent projects.  Although this repository
