@@ -8,7 +8,7 @@
 echo "Starting RISC-V Toolchain build process"
 
 check_version() {
-    $1 --version | awk "NR==1 {if (\$NF>$2) {exit 0} exit 1}" || (
+    $1 --version | awk "NR==1 {if (\$NF>=$2) {exit 0} exit 1}" || (
         echo $3 requires at least version $2 of $1. Aborting.
         exit 1
     )
