@@ -53,6 +53,10 @@ Ubuntu packages needed:
 Fedora packages needed:
 
 	$ sudo dnf install autoconf automake @development-tools curl dtc libmpc-devel mpfr-devel gmp-devel libusb-devel gawk gcc-c++ bison flex texinfo gperf libtool patchutils bc zlib-devel expat-devel
+	
+Arch packages needed:
+
+	$ sudo pacman -S autoconf automake curl mpc mpfr gmp libusb gawk base-devel bison flex texinfo gperf libtool patchutils bc zlib dtc pkg-config expat
 
 _Note:_ This requires a compiler with C++11 support (e.g. GCC >= 4.8).
 To use a compiler different than the default, use:
