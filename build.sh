@@ -16,7 +16,8 @@ check_version() {
 
 check_version automake 1.14 "OpenOCD build"
 check_version autoconf 2.64 "OpenOCD build"
-build_project riscv-openocd --prefix=$RISCV --enable-remote-bitbang --enable-jtag_vpi --disable-werror
+(cd riscv-openocd && ./bootstrap)
+build_project riscv-openocd --prefix=$RISCV --enable-remote-bitbang --enable-jtag_vpi --disable-werror --disable-jlink
 
 build_project riscv-isa-sim --prefix=$RISCV
 CC= CXX= build_project riscv-pk --prefix=$RISCV --host=riscv64-unknown-elf
